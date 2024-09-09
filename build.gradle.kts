@@ -1,10 +1,9 @@
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.10.1"
+//    id("org.jetbrains.intellij") version "1.10.1"
 //    id("org.jetbrains.kotlin.jvm") version "1.9.25"
-//    id("org.jetbrains.intellij") version "1.17.4"
+    id("org.jetbrains.intellij") version "1.17.4"
 }
-
 
 group = "com.wjy35"
 version = "1.0.0"
@@ -30,8 +29,8 @@ intellij {
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
 
     patchPluginXml {
