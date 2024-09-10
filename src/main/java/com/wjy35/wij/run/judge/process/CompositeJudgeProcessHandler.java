@@ -14,6 +14,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiJavaFile;
 import com.wjy35.wij.run.judge.environment.JudgeEnvironment;
+import com.wjy35.wij.run.judge.exception.ProblemNumberInputCanceledException;
 import com.wjy35.wij.run.judge.task.JudgeTask;
 import com.wjy35.wij.ui.dialog.ProblemNumberDialog;
 import com.wjy35.wij.util.crawling.BojCrawler;
@@ -28,6 +29,7 @@ import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CompositeJudgeProcessHandler extends OSProcessHandler {
     ConsoleView consoleView;
@@ -107,7 +109,10 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                     consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
                 }catch (ExecutionException e) {
                     throw new RuntimeException(e);
+                }catch (ProblemNumberInputCanceledException e){
+                    consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
                 }finally {
+                    destroyProcess();
                     CompositeJudgeProcessHandler.super.startNotify();
                 }
             }
@@ -115,7 +120,9 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
     }
 
     public void updateWijDirectory() throws IOException {
-        String problemNumber = ProblemNumberDialog.showAndGet();
+        String problemNumber = Optional.ofNullable(ProblemNumberDialog.showAndGet())
+                .orElseThrow(ProblemNumberInputCanceledException::new);
+
         ioFileManager.deleteFiles();
         ioFileManager.saveAll(BojCrawler.crawlAll(problemNumber));
     }
