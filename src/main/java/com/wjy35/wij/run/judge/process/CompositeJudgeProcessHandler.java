@@ -144,7 +144,8 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
     public void initJudgeTaskList(List<String> inputNumberList){
         for(String inputNumber : inputNumberList){
-            GeneralCommandLine commandLine = new GeneralCommandLine("java","-Dfile.encoding=UTF-8","-cp",compilePath,packageName+".Main");
+            String qualifiedName = packageName + (packageName.isEmpty() ? "Main":".Main");
+            GeneralCommandLine commandLine = new GeneralCommandLine("java","-Dfile.encoding=UTF-8","-cp",compilePath,qualifiedName);
             commandLine.withInput(new File(ioFileManager.getInputPath(inputNumber)));
             judgeTaskList.add(new JudgeTask(inputNumber,commandLine));
         }
