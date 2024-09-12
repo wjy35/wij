@@ -15,22 +15,24 @@
 1. [백준 Java 제출 규칙](https://help.acmicpc.net/language/info)에 맞는 코드를 작성하세요.<br> 
 
 2. Main class, main Method 옆에 Run 아이콘이 활성화 됩니다. <br>
-![2](/src/main/resources/readme/icon.png)
-
+   <img src="/src/main/resources/readme/icon.png" width="400"/>
 3. 아이콘을 클릭하여 Run Option을 설정합니다. <br>
-![3](/src/main/resources/readme/run.png)
+   <img src="/src/main/resources/readme/run.png" width="400"/>
+
 - Judge: 가장 최근 Update 된 Input으로 테스트를 시작합니다.
 - Update Input & Judge: 새롭게 Input을 Update하고 테스트를 시작합니다.
 
 4. Update Input & Judge 를 선택한 경우 문제 번호를 입력해주세요.<br>
-![4](/src/main/resources/readme/dialog.png)
+   <img src="/src/main/resources/readme/dialog.png" width="400"/>
+
+
 - 해당 문제 번호를 통해 Input을 크롤링하여 root/wij/io/ 에 저장합니다.
 
 5. Compile하고 실행하여 Output과 비교합니다. <br>
-![5](/src/main/resources/readme/compile.png)
+   <img src="/src/main/resources/readme/compile.png" width="400"/>
 
 6. 모든 테스트 케이스를 통과하면 클립보드에 복사됩니다. <br>
-![6](/src/main/resources/readme/accepted.png)
+   <img src="/src/main/resources/readme/accepted.png" width="400"/>
 
 ## How It Works?
 
