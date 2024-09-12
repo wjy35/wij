@@ -55,7 +55,7 @@ public class RunListPopup implements ListPopupStep<RunListPopupItem> {
 
     @Override
     public @NlsContexts.PopupTitle @Nullable String getTitle() {
-        return "BaekJoon RunConfiguration";
+        return "Run";
     }
 
     @Override
