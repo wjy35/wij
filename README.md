@@ -1,10 +1,14 @@
 # Baekjoon Algorithm Problem Judge Plugin for IntelliJ IDEA
+![Static Badge](https://img.shields.io/badge/Intellij%20IDEA-plugin-gray?style=plastic&logo=IntellijIDEA&color=%236699CC)
+![Static Badge](https://img.shields.io/badge/WangJoon%20Intellij%20Judge-v1.0.0-good?style=plastic&color=%236699CC)
+![Static Badge](https://img.shields.io/badge/BaeJoon%20Online%20Judge-%238E8E93?style=plastic)
 
-백준의 문제 코드를 작성하고 쉽게 테스트해볼 수 있는 플러그인 입니다.
-- 크롤링을 통한 테스트 가능
-- 커스텀 데이터 테스트 가능
-- 사용하기 쉬운 UI 제공
-- 테스트 모두 통과시 클립보드 자동 복사 지원
+
+##### 백준의 문제 코드를 작성하고 쉽게 테스트해볼 수 있는 플러그인 입니다.
+크롤링을 통한 테스트 가능 <br>
+커스텀 데이터 테스트 가능 <br>
+사용하기 쉬운 UI 제공 <br>
+테스트 모두 통과시 클립보드 자동 복사 지원 <br>
 
 ## How to use?
 
@@ -17,17 +21,11 @@
 | Delete All                | Input과 Output 파일을 모두 삭제합니다.        |
 
 ##### Update Input & Judge 를 선택한 경우 문제 번호를 입력해주세요.
-문제 번호로 크롤링하여 wij/io/ 에 저장합니다.<br>
-
-
 <img src="/src/main/resources/readme/run.gif" width="476" alt="Run Image"/>
 <br>
 
-
 ##### Compile 하고 실행하여 Output과 비교합니다.
-컴파일한 파일은 wij/class/에 저장합니다.<br>
 <img src="/src/main/resources/readme/process.gif" width="500" alt="Process Image"/>
-<br>
 <br>
 
 ##### 모든 테스트 케이스를 통과하면 클립보드에 복사됩니다.
