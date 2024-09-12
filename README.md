@@ -14,12 +14,19 @@
 Main class, main Method 옆에 Run 아이콘이 활성화 됩니다. <br>
 아이콘을 클릭하여 Run Option 을 설정합니다.
 - Judge: 가장 최근 Update 된 Input으로 테스트를 시작합니다.
-- Update Input & Judge: 새롭게 Input을 Update하고 테스트를 시작합니다.
+- Update Input & Judge: 새롭게 Input을 Update하고 테스트를 시작합니다. 
+
+| Run                       | Description                        |
+|---------------------------|------------------------------------|
+| Judge                     | 가장 최근 Update 된 Input으로 테스트를 시작합니다. |
+| Update Input File & Judge | 새롭게 Input을 Update하고 테스트를 시작합니다.    |
+| Delete All                | Input과 Output 파일을 모두 삭제합니다.        |
+
 Update Input & Judge 를 선택한 경우 문제 번호를 입력해주세요.
-- 해당 문제 번호를 통해 Input을 크롤링하여 root/wij/io/ 에 저장합니다.
+  - 해당 문제 번호를 통해 Input을 크롤링하여 root/wij/io/ 에 저장합니다.
 
 
-Compile 하고 실행하여 Output과 비교합니다.
+Compile 하고 실행하여 Output과 비교합니다. <br>
 <img src="/src/main/resources/readme/process.gif" width="500" alt="Process Image"/>
 <br>
 모든 테스트 케이스를 통과하면 클립보드에 복사됩니다.
