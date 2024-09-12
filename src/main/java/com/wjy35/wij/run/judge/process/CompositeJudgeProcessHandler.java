@@ -17,6 +17,7 @@ import com.wjy35.wij.run.judge.environment.JudgeEnvironment;
 import com.wjy35.wij.run.judge.exception.ProblemNumberInputCanceledException;
 import com.wjy35.wij.run.judge.task.JudgeTask;
 import com.wjy35.wij.ui.dialog.ProblemNumberDialog;
+import com.wjy35.wij.util.clipboard.ClipBoardUtil;
 import com.wjy35.wij.util.crawling.BojCrawler;
 import com.wjy35.wij.util.file.IOFileManager;
 import com.wjy35.wij.util.file.WijDirectoryManager;
@@ -33,6 +34,7 @@ import java.util.Optional;
 
 public class CompositeJudgeProcessHandler extends OSProcessHandler {
     ConsoleView consoleView;
+    PsiJavaFile psiJavaFile;
     VirtualFile directory;
     Project project;
     String path;
@@ -49,8 +51,7 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
         super(commandLine);
 
         this.consoleView = judgeEnvironment.getConsoleView();
-
-        PsiJavaFile psiJavaFile =  judgeEnvironment.getPsiJavaFile();
+        this.psiJavaFile =  judgeEnvironment.getPsiJavaFile();
         this.directory = psiJavaFile.getVirtualFile().getParent();
         this.project = psiJavaFile.getProject();
         this.path = this.directory.getPath();
@@ -91,7 +92,18 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                     compilePath = WijDirectoryManager.getInstance(project).getCompileDirectory().getPath();
                     compile();
                     initJudgeTaskList(inputNumberList);
-                    startTask();
+
+                    JudgeResult result = judge();
+                    if(result.isAllAccepted()){
+                        consoleView.print(result+ "\n", ConsoleViewContentType.USER_INPUT);
+                        consoleView.print("소스코드가 클립보드에 복사 되었습니다!\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                    }else{
+                        consoleView.print(result + "\n", ConsoleViewContentType.ERROR_OUTPUT);
+                    }
+                    consoleView.print("===================================================\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+
+
+                    if(result.isAllAccepted()) copyToClipBoard();
                 } catch (HttpStatusException e) {
                     ApplicationManager.getApplication().invokeAndWait(() -> {
                         Messages.showErrorDialog("올바른 문제 번호를 입력해주세요.","WangJun Intellij Judge");
@@ -144,13 +156,17 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
     public void initJudgeTaskList(List<String> inputNumberList){
         for(String inputNumber : inputNumberList){
-            GeneralCommandLine commandLine = new GeneralCommandLine("java","-Dfile.encoding=UTF-8","-cp",compilePath,packageName+".Main");
+            String qualifiedName = packageName + (packageName.isEmpty() ? "Main":".Main");
+            GeneralCommandLine commandLine = new GeneralCommandLine("java","-Dfile.encoding=UTF-8","-cp",compilePath,qualifiedName);
             commandLine.withInput(new File(ioFileManager.getInputPath(inputNumber)));
             judgeTaskList.add(new JudgeTask(inputNumber,commandLine));
         }
     }
 
-    public void startTask() throws ExecutionException {
+    public JudgeResult judge() throws ExecutionException {
+        int acceptedCount = 0;
+        int taskCount = judgeTaskList.size();
+
         for(JudgeTask task : judgeTaskList){
             if(isCanceled) {
                 consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
@@ -186,12 +202,15 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
             if(isAccepted(actual,expected)){
                 consoleView.print("Result: Accepted\n", ConsoleViewContentType.USER_INPUT);
+                acceptedCount++;
             }else{
                 consoleView.print("Result: Wrong Answer\n", ConsoleViewContentType.ERROR_OUTPUT);
             }
 
             consoleView.print("===================================================\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
         }
+
+        return new JudgeResult(acceptedCount,taskCount);
     }
 
     public boolean isAccepted(String actual,String expected) {
@@ -216,6 +235,16 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
         }
 
         return true;
+    }
+
+    private void copyToClipBoard(){
+        String sourceCode = this.psiJavaFile.getText();
+        if(!this.packageName.isEmpty()) {
+            String packageCode = "package " + this.packageName + ";";
+            sourceCode = sourceCode.replaceFirst(packageCode,"");
+        }
+
+        ClipBoardUtil.copy(sourceCode.trim());
     }
 
 }
