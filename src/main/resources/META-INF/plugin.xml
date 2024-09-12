@@ -1,5 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
+
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
     <id>com.wjy35.wij</id>
 
@@ -14,8 +15,14 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+<h3>백준의 문제 코드를 작성하고 쉽게 테스트해볼 수 있는 플러그인 입니다.</h3>
+크롤링을 통한 테스트 가능 <br>
+커스텀 데이터 테스트 가능 <br>
+사용하기 쉬운 UI 제공 <br>
+테스트 모두 통과시 클립보드 자동 복사 지원 <br>
+
+<h3>태그</h3>
+백준 BaekJoon Boj BOJ 왕준 WangJun
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
