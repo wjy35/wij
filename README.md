@@ -1,4 +1,4 @@
-# Baekjoon Algorithm Problem Judge Plugin for IntelliJ IDEA
+# Baekjoon Online Judge Plugin for IntelliJ IDEA
 ![Static Badge](https://img.shields.io/badge/Intellij%20IDEA-plugin-gray?style=plastic&logo=IntellijIDEA&color=%236699CC)
 ![Static Badge](https://img.shields.io/badge/WangJoon%20Intellij%20Judge-v1.0.0-good?style=plastic&color=%236699CC)
 <a href="https://www.acmicpc.net/" target="_blank" rel="noopener noreferrer">
@@ -6,10 +6,12 @@
 </a>
 
 ##### 백준의 문제 코드를 작성하고 쉽게 테스트해볼 수 있는 플러그인 입니다.
-크롤링을 통한 테스트 가능 <br>
-커스텀 데이터 테스트 가능 <br>
-사용하기 쉬운 UI 제공 <br>
-테스트 모두 통과시 클립보드 자동 복사 지원 <br>
+- 크롤링을 통한 테스트 가능 
+- 커스텀 데이터 테스트 가능 
+- 사용하기 쉬운 UI 제공
+- 테스트 모두 통과시 클립보드 자동 복사 지원
+
+<br>
 
 ## How to use?
 
