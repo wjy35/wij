@@ -15,7 +15,7 @@ public class JudgeRunConfigurationFactory extends ConfigurationFactory {
         return JudgeRunConfigurationType.ID
                 + options.getPsiJavaFile().getPackageName()
                 + options.getPsiJavaFile().getName()
-                + options.isUpdateInputFile();
+                + options.isUpdateFile();
     }
 
     public JudgeRunConfigurationFactory(@NotNull ConfigurationType type, @NotNull JudgeRunConfigurationOptions options) {

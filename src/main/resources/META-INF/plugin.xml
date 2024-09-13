@@ -36,11 +36,33 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
-
+    
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.wjy35.wij.ui.linemarker.WijLineMarkerProvider"/>
         <configurationType implementation="com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationType" />
     </extensions>
+
+    <actions>
+        <group id="com.wjy35.wij.run" text="Wij Run" description="Group of Wij run actions" popup="true">
+            <action id="com.wjy35.wij.run.judge.JudgeAction" class="com.wjy35.wij.run.judge.JudgeAction" text="Judge" icon="/icons/run.svg" >
+                <keyboard-shortcut first-keystroke="control alt J" keymap="$default" replace-all="true"/>
+                <keyboard-shortcut first-keystroke="control alt J" keymap="Mac OS X 10.5+" replace-all="true"/>
+                <keyboard-shortcut first-keystroke="control alt J" keymap="Mac OS X" replace-all="true"/>
+            </action>
+            <action id="com.wjy35.wij.run.judge.UpdateAndJudgeAction" class="com.wjy35.wij.run.judge.UpdateAndJudgeAction" text="Update Files  &amp; Judge" icon="/icons/ConcurrencyDiagramToolwindow.svg" >
+                <keyboard-shortcut first-keystroke="control alt U" keymap="$default" replace-all="true"/>
+                <keyboard-shortcut first-keystroke="control alt U" keymap="Mac OS X 10.5+" replace-all="true"/>
+                <keyboard-shortcut first-keystroke="control alt U" keymap="Mac OS X" replace-all="true"/>
+            </action>
+            <separator/>
+            <action id="com.wjy35.wij.run.delete.DeleteAction" class="com.wjy35.wij.run.delete.DeleteAction" text="Delete All Files" icon="/icons/delete.svg">
+                <keyboard-shortcut first-keystroke="control alt D" keymap="$default" replace-all="true"/>
+                <keyboard-shortcut first-keystroke="control alt D" keymap="Mac OS X 10.5+" replace-all="true"/>
+                <keyboard-shortcut first-keystroke="control alt D" keymap="Mac OS X" replace-all="true"/>
+            </action>
+        </group>
+
+    </actions>
 </idea-plugin>
