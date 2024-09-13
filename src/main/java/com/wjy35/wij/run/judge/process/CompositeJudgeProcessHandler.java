@@ -5,18 +5,16 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessTerminatedListener;
 import com.intellij.execution.ui.ConsoleView;
-import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiJavaFile;
 import com.wjy35.wij.run.judge.console.JudgeConsolePrinter;
 import com.wjy35.wij.run.judge.environment.JudgeEnvironment;
 import com.wjy35.wij.run.judge.exception.ProblemNumberInputCanceledException;
 import com.wjy35.wij.run.judge.task.JudgeTask;
+import com.wjy35.wij.ui.dialog.JudgeErrorDialog;
 import com.wjy35.wij.ui.dialog.ProblemNumberDialog;
 import com.wjy35.wij.util.clipboard.ClipBoardUtil;
 import com.wjy35.wij.util.crawling.BojCrawler;
@@ -24,10 +22,8 @@ import com.wjy35.wij.util.file.IOFileManager;
 import com.wjy35.wij.util.file.WijDirectoryManager;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.HttpStatusException;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +57,8 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
         this.packageName = judgeEnvironment.getOptions().getPackageName();
         this.qualifiedName = judgeEnvironment.getOptions().getQualifiedName();
 
+        this.consolePrinter = new JudgeConsolePrinter(consoleView);
+
         this.isCanceled = false;
     }
 
@@ -83,7 +81,6 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 try{
-                    consolePrinter = new JudgeConsolePrinter(consoleView);
                     consolePrinter.printStartMessage();
                     consolePrinter.printSeparator();
 
@@ -102,25 +99,17 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                     consolePrinter.printSeparator();
 
                     if(totalJudgeResult.isAllAccepted()) ClipBoardUtil.copy(psiJavaFile);
+
                 } catch (HttpStatusException e) {
                     consolePrinter.printProcessCanceledMessage();
-                    ApplicationManager.getApplication().invokeAndWait(() -> {
-                        Messages.showErrorDialog("올바른 문제 번호를 입력해주세요.","WangJun Intellij Judge");
-                    });
+                    JudgeErrorDialog.showWrongProblemNumber();
                 } catch (UnknownHostException e) {
                     consolePrinter.printProcessCanceledMessage();
-                    ApplicationManager.getApplication().invokeAndWait(() -> {
-                        Messages.showErrorDialog("인터넷 연결을 확인해주세요.","WangJun Intellij Judge");
-                    });
-                } catch (IOException e) {
+                    JudgeErrorDialog.showInternetConnectionError();
+                } catch (IOException | ExecutionException e) {
                     consolePrinter.printProcessCanceledMessage();
-                    ApplicationManager.getApplication().invokeAndWait(() -> {
-                        Messages.showErrorDialog("잠시후 다시 시도해주세요.","WangJun Intellij Judge");
-                    });
-                }catch (ExecutionException e) {
-                    consolePrinter.printProcessCanceledMessage();
-                    throw new RuntimeException(e);
-                }catch (ProblemNumberInputCanceledException e){
+                    JudgeErrorDialog.showTryLater();
+                } catch (ProblemNumberInputCanceledException e){
                     consolePrinter.printProcessCanceledMessage();
                 }finally {
                     destroyProcess();
