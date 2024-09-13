@@ -6,24 +6,40 @@ import com.intellij.psi.PsiJavaFile;
 import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationFactory;
 import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationOptions;
 import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationType;
+import org.jetbrains.annotations.NotNull;
 
-public class JudgeExecutor{
-    private JudgeRunConfigurationOptions options;
+public class JudgeExecutor {
+    private final PsiJavaFile psiJavaFile;
 
-    public JudgeExecutor(JudgeRunConfigurationOptions options) {
-        this.options = options;
+    public JudgeExecutor(@NotNull PsiJavaFile psiJavaFile) {
+        this.psiJavaFile = psiJavaFile;
     }
 
-    public void start(){
-        PsiJavaFile psiJavaFile = options.getPsiJavaFile();
-        Project project = psiJavaFile.getProject();
+    public void executeWithoutUpdate(){
+        execute(false);
+    }
 
-        JudgeRunConfigurationFactory factory = new JudgeRunConfigurationFactory(new JudgeRunConfigurationType(), options);
-        RunnerAndConfigurationSettings settings = RunManager.getInstance(project).createConfiguration("Boj " + psiJavaFile.getPackageName()+ "." + psiJavaFile.getName(), factory);
+    public void executeWithUpdate(){
+        execute(true);
+    }
+
+    private void execute(boolean updateFile){
+        Project project = this.psiJavaFile.getProject();
+
+        JudgeRunConfigurationType type = new JudgeRunConfigurationType();
+        JudgeRunConfigurationOptions options = new JudgeRunConfigurationOptions(this.psiJavaFile,updateFile);
+        JudgeRunConfigurationFactory factory = new JudgeRunConfigurationFactory(type, options);
+
+        String qualifiedName = this.psiJavaFile.getPackageName()
+                + (this.psiJavaFile.getPackageName().isEmpty() ? "Main": ".Main");
+
+        RunManager runManager = RunManager.getInstance(project);
+        RunnerAndConfigurationSettings settings = runManager.createConfiguration(qualifiedName, factory);
 
         Executor executor = ExecutorRegistry.getInstance().getExecutorById("Run");
         ProgramRunnerUtil.executeConfiguration(settings, executor);
 
-        RunManager.getInstance(project).addConfiguration(settings);
+        runManager.addConfiguration(settings);
+        runManager.setSelectedConfiguration(settings);
     }
 }

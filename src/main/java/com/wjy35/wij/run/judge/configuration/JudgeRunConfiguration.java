@@ -38,7 +38,7 @@ public class JudgeRunConfiguration extends LocatableConfigurationBase<JudgeRunCo
             @Override
             public @Nullable ExecutionResult execute(Executor executor, @NotNull ProgramRunner<?> runner) throws ExecutionException {
                 ConsoleView consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(environment.getProject()).getConsole();
-                JudgeEnvironment judgeEnvironment = new JudgeEnvironment(consoleView,options.getPsiJavaFile(),options.isUpdateInputFile());
+                JudgeEnvironment judgeEnvironment = new JudgeEnvironment(consoleView,options.getPsiJavaFile(),options.isUpdateFile());
 
                 GeneralCommandLine commandLine = new GeneralCommandLine("java","--version");
                 ProcessHandler processHandler = new CompositeJudgeProcessHandler(commandLine,judgeEnvironment);

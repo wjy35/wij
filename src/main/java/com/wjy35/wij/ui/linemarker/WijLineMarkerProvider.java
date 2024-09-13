@@ -3,14 +3,19 @@ package com.wjy35.wij.ui.linemarker;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.psi.*;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.FunctionUtil;
+import com.wjy35.wij.run.judge.JudgeAction;
 import com.wjy35.wij.ui.icon.Icons;
-import com.wjy35.wij.ui.popup.run.RunListPopup;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.MouseEvent;
@@ -46,13 +51,10 @@ public class WijLineMarkerProvider implements LineMarkerProvider {
     private static class BojLineMarkerClickHandler implements GutterIconNavigationHandler<PsiElement>{
         @Override
         public void navigate(MouseEvent mouseEvent, PsiElement psiElement) {
-            PsiElement psiJavaFile = psiElement.getParent().getParent();
-            if(!(psiJavaFile instanceof PsiJavaFile)) {
-                psiJavaFile = psiJavaFile.getParent();
-            }
+            DataContext dataContext = DataManager.getInstance().getDataContext(mouseEvent.getComponent());
+            ActionGroup actionGroup = (ActionGroup) ActionManager.getInstance().getAction("com.wjy35.wij.run");
 
-            RunListPopup runListPopup = new RunListPopup((PsiJavaFile) psiJavaFile);
-            ListPopup popup = JBPopupFactory.getInstance().createListPopup(runListPopup);
+            ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup("WIJ Run",actionGroup,dataContext,null,false,null);
             popup.show(new RelativePoint(mouseEvent));
         }
     }
