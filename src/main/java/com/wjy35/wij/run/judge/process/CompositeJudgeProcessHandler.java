@@ -13,6 +13,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiJavaFile;
+import com.wjy35.wij.run.judge.console.JudgeConsolePrinter;
 import com.wjy35.wij.run.judge.environment.JudgeEnvironment;
 import com.wjy35.wij.run.judge.exception.ProblemNumberInputCanceledException;
 import com.wjy35.wij.run.judge.task.JudgeTask;
@@ -33,20 +34,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class CompositeJudgeProcessHandler extends OSProcessHandler {
+    /* Option Data */
     ConsoleView consoleView;
     PsiJavaFile psiJavaFile;
     boolean isUpdateFile;
-
     VirtualFile directory;
     Project project;
-    String compilePath;
     String packageName;
     String qualifiedName;
 
-    List<JudgeTask> judgeTaskList;
+    /* Process Data */
+    String compilePath;
     JudgeProcessHandler curProcessHandler;
     boolean isCanceled;
 
+    JudgeConsolePrinter consolePrinter;
     IOFileManager ioFileManager;
     public CompositeJudgeProcessHandler(@NotNull GeneralCommandLine commandLine, JudgeEnvironment judgeEnvironment) throws ExecutionException {
         super(commandLine);
@@ -59,7 +61,6 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
         this.packageName = judgeEnvironment.getOptions().getPackageName();
         this.qualifiedName = judgeEnvironment.getOptions().getQualifiedName();
 
-        this.judgeTaskList = new ArrayList<>();
         this.isCanceled = false;
     }
 
@@ -74,36 +75,33 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
     public void startNotify() {
         new Task.Backgroundable(this.project, "Boj Test..",true) {
             @Override
+            public void onCancel() {
+                super.onCancel();
+                destroyProcess();
+            }
+
+            @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 try{
-                    consoleView.print("\n" +
-                            " _    _                          ___               \n" +
-                            "| |  | |                        |_  |              \n" +
-                            "| |  | |  __ _  _ __    __ _      | | _   _  _ __  \n" +
-                            "| |/\\| | / _` || '_ \\  / _` |     | || | | || '_ \\ \n" +
-                            "\\  /\\  /| (_| || | | || (_| | /\\__/ /| |_| || | | |\n" +
-                            " \\/  \\/  \\__,_||_| |_| \\__, | \\____/  \\__,_||_| |_|\n" +
-                            "                        __/ |                      \n" +
-                            "                       |___/                       \n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
-                    consoleView.print("===================================================\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+                    consolePrinter = new JudgeConsolePrinter(consoleView);
+                    consolePrinter.printStartMessage();
+                    consolePrinter.printSeparator();
+
                     ioFileManager = new IOFileManager(project,packageName);
                     if(isUpdateFile) updateWijDirectory();
 
-                    List<String> inputNumberList = ioFileManager.getInputNumberList();
-                    compilePath = WijDirectoryManager.getInstance(project).getCompileDirectory().getPath();
+                    consolePrinter.printCompileMessage();
                     compile();
-                    initJudgeTaskList(inputNumberList);
+                    consolePrinter.printSeparator();
 
-                    JudgeResult result = judge();
-                    if(result.isAllAccepted()){
-                        consoleView.print(result+ "\n", ConsoleViewContentType.USER_INPUT);
-                        consoleView.print("소스코드가 클립보드에 복사 되었습니다!\n", ConsoleViewContentType.NORMAL_OUTPUT);
-                    }else{
-                        consoleView.print(result + "\n", ConsoleViewContentType.ERROR_OUTPUT);
-                    }
-                    consoleView.print("===================================================\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+                    List<String> inputNumberList = ioFileManager.getInputNumberList();
+                    List<JudgeTask> judgeTaskList = initJudgeTaskList(inputNumberList);
+                    TotalJudgeResult totalJudgeResult = judge(judgeTaskList);
 
-                    if(result.isAllAccepted()) ClipBoardUtil.copy(psiJavaFile);
+                    consolePrinter.printTotalJudgeResult(totalJudgeResult);
+                    consolePrinter.printSeparator();
+
+                    if(totalJudgeResult.isAllAccepted()) ClipBoardUtil.copy(psiJavaFile);
                 } catch (HttpStatusException e) {
                     ApplicationManager.getApplication().invokeAndWait(() -> {
                         Messages.showErrorDialog("올바른 문제 번호를 입력해주세요.","WangJun Intellij Judge");
@@ -140,42 +138,44 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
     }
 
     public void compile() throws ExecutionException {
+        compilePath = WijDirectoryManager.getInstance(project).getCompileDirectory().getPath();
+
         GeneralCommandLine commandLine = new GeneralCommandLine("javac","-Xlint:none","-nowarn", "-d",compilePath,"Main.java");
         commandLine.setWorkDirectory(directory.getPath());
+
         OSProcessHandler processHandler = new CompileProcessHandler(commandLine);
         ProcessTerminatedListener.attach(processHandler);
         consoleView.attachToProcess(processHandler);
-        consoleView.print("Compile Main.java\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
 
         processHandler.startNotify();
         processHandler.waitFor();
-
-        consoleView.print("===================================================\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
     }
 
-    public void initJudgeTaskList(List<String> inputNumberList){
+    public List<JudgeTask> initJudgeTaskList(List<String> inputNumberList){
+        List<JudgeTask> judgeTaskList = new ArrayList<>();
+
         for(String inputNumber : inputNumberList){
             GeneralCommandLine commandLine = new GeneralCommandLine("java","-Dfile.encoding=UTF-8","-cp",compilePath,qualifiedName);
             commandLine.withInput(new File(ioFileManager.getInputPath(inputNumber)));
+
             judgeTaskList.add(new JudgeTask(inputNumber,commandLine));
         }
+
+        return judgeTaskList;
     }
 
-    public JudgeResult judge() throws ExecutionException {
-        int acceptedCount = 0;
-        int taskCount = judgeTaskList.size();
+    public TotalJudgeResult judge(List<JudgeTask> judgeTaskList) throws ExecutionException {
+        TotalJudgeResult totalJudgeResult = new TotalJudgeResult(judgeTaskList.size());
 
         for(JudgeTask task : judgeTaskList){
             if(isCanceled) {
-                consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
+                consolePrinter.printProcessCanceledMessage();
                 break;
             }
-
             curProcessHandler = null;
             curProcessHandler = new JudgeProcessHandler(task.getCommandLine());
-
             if(isCanceled) {
-                consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
+                consolePrinter.printProcessCanceledMessage();
                 curProcessHandler.destroyProcess();
                 break;
             }
@@ -183,11 +183,12 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
             ProcessTerminatedListener.attach(curProcessHandler);
             consoleView.attachToProcess(curProcessHandler);
 
-            consoleView.print("#"+task.getInputNumber()+"\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
-            consoleView.print("Actual:\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+            consolePrinter.printTestNumberMessage(task.getInputNumber());
+            consolePrinter.printActual();
             curProcessHandler.startNotify();
+
             if(curProcessHandler.isTimeLimitExceeded()){
-                consoleView.print("Time Limit Exceeded\n", ConsoleViewContentType.ERROR_OUTPUT);
+                consolePrinter.printTimeLimitExceededMessage();
                 curProcessHandler.destroyProcess();
 
                 continue;
@@ -195,43 +196,18 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
             String actual = curProcessHandler.getOutput();
             String expected = ioFileManager.getExpected(task.getInputNumber());
-            consoleView.print("\n\nExpected:\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
-            consoleView.print(expected+"\n",ConsoleViewContentType.NORMAL_OUTPUT);
+            consolePrinter.printExpected(expected);
 
-            if(isAccepted(actual,expected)){
-                consoleView.print("Result: Accepted\n", ConsoleViewContentType.USER_INPUT);
-                acceptedCount++;
+            if(new JudgeResult(actual,expected).isAccepted()){
+                consolePrinter.printAcceptedMessage();
+                totalJudgeResult.increaseAcceptedCount();
             }else{
-                consoleView.print("Result: Wrong Answer\n", ConsoleViewContentType.ERROR_OUTPUT);
+                consolePrinter.printWrongAnswerMessage();
             }
 
-            consoleView.print("===================================================\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+            consolePrinter.printSeparator();
         }
 
-        return new JudgeResult(acceptedCount,taskCount);
-    }
-
-    public boolean isAccepted(String actual,String expected) {
-        if(actual.isEmpty()) return false;
-        try {
-            BufferedReader expectedBr = new BufferedReader(new StringReader(expected));
-            BufferedReader actualBr = new BufferedReader(new StringReader(actual));
-            String expectedLine = null;
-            String actualLine = null;
-
-            while(((expectedLine = expectedBr.readLine()) != null) & ((actualLine = actualBr.readLine()) != null)){
-                if(!expectedLine.stripTrailing().equals(actualLine.stripTrailing())) return  false;
-            }
-
-            while(expectedLine!=null && expectedLine.isEmpty()) expectedLine = expectedBr.readLine();
-            while(actualLine!=null && actualLine.isEmpty()) actualLine = actualBr.readLine();
-
-            if(expectedLine!=null) return false;
-            if(actualLine!=null) return false;
-        } catch (IOException e) {
-            return false;
-        }
-
-        return true;
+        return totalJudgeResult;
     }
 }
