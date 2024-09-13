@@ -103,24 +103,25 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
                     if(totalJudgeResult.isAllAccepted()) ClipBoardUtil.copy(psiJavaFile);
                 } catch (HttpStatusException e) {
+                    consolePrinter.printProcessCanceledMessage();
                     ApplicationManager.getApplication().invokeAndWait(() -> {
                         Messages.showErrorDialog("올바른 문제 번호를 입력해주세요.","WangJun Intellij Judge");
                     });
-                    consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
                 } catch (UnknownHostException e) {
+                    consolePrinter.printProcessCanceledMessage();
                     ApplicationManager.getApplication().invokeAndWait(() -> {
                         Messages.showErrorDialog("인터넷 연결을 확인해주세요.","WangJun Intellij Judge");
                     });
-                    consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
                 } catch (IOException e) {
+                    consolePrinter.printProcessCanceledMessage();
                     ApplicationManager.getApplication().invokeAndWait(() -> {
                         Messages.showErrorDialog("잠시후 다시 시도해주세요.","WangJun Intellij Judge");
                     });
-                    consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
                 }catch (ExecutionException e) {
+                    consolePrinter.printProcessCanceledMessage();
                     throw new RuntimeException(e);
                 }catch (ProblemNumberInputCanceledException e){
-                    consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
+                    consolePrinter.printProcessCanceledMessage();
                 }finally {
                     destroyProcess();
                     CompositeJudgeProcessHandler.super.startNotify();

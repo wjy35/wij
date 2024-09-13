@@ -30,7 +30,7 @@ public class JudgeConsolePrinter {
     }
 
     public void printProcessCanceledMessage(){
-        consoleView.print("is Canceled", ConsoleViewContentType.USER_INPUT);
+        consoleView.print("is Canceled", ConsoleViewContentType.LOG_WARNING_OUTPUT);
     }
 
     public void printTestNumberMessage(String number){
