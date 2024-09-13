@@ -8,19 +8,21 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class JudgeRunConfigurationFactory extends ConfigurationFactory {
-    JudgeRunConfigurationOptions options;
+    private final JudgeRunConfigurationOptions options;
+    private final String id;
 
     @Override
     public @NotNull @NonNls String getId() {
-        return JudgeRunConfigurationType.ID
-                + options.getPsiJavaFile().getPackageName()
-                + options.getPsiJavaFile().getName()
-                + options.isUpdateFile();
+        return this.id;
     }
 
     public JudgeRunConfigurationFactory(@NotNull ConfigurationType type, @NotNull JudgeRunConfigurationOptions options) {
         super(type);
         this.options = options;
+        this.id = JudgeRunConfigurationType.ID
+                + options.getPsiJavaFile().getPackageName()
+                + options.getPsiJavaFile().getName()
+                + options.isUpdateFile();
     }
 
     @Override

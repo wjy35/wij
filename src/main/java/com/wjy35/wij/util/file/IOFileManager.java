@@ -1,14 +1,13 @@
 package com.wjy35.wij.util.file;
 
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.wjy35.wij.util.crawling.BojCrawlResult;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,35 +86,39 @@ public class IOFileManager {
     }
 
     public List<String> getInputNumberList() {
-        List<String> inputNumberList = new ArrayList<>();
+        return ReadAction.compute(()->{
+            List<String> inputNumberList = new ArrayList<>();
 
-        for(Integer number = START_FILE_NUMBER; number < MAX_FILE_COUNT; number++) {
-            if(this.packageIoDirectory.findChild(INPUT_FILE_NAME + number) == null) continue;
-            if(this.packageIoDirectory.findChild(OUTPUT_FILE_NAME + number) == null) continue;
+            for(int number = START_FILE_NUMBER; number < MAX_FILE_COUNT; number++) {
 
-            inputNumberList.add(number.toString());
-        }
+                if(this.packageIoDirectory.findChild(INPUT_FILE_NAME + number) == null) continue;
+                if(this.packageIoDirectory.findChild(OUTPUT_FILE_NAME + number) == null) continue;
 
-        return inputNumberList;
+                inputNumberList.add(Integer.toString(number));
+            }
+
+            return inputNumberList;
+        });
     }
 
     public String getExpected(String fileNumber){
-        StringBuilder sb = new StringBuilder();
-        FileReader fileReader = null;
-        BufferedReader fileBr = null;
-        try {
-            String path = this.packageIoDirectory.getPath()+File.separator+OUTPUT_FILE_NAME+fileNumber;
-            fileReader = new FileReader(path);
-            fileBr = new BufferedReader(fileReader);
+        return ReadAction.compute(()->{
+            VirtualFile outputFile = this.packageIoDirectory.findChild(OUTPUT_FILE_NAME+fileNumber);
+            if(outputFile == null) return "";
 
-            String expectedLine = null;
-            while((expectedLine = fileBr.readLine()) != null){
-                sb.append(expectedLine).append("\n");
+            StringBuilder sb = new StringBuilder();
+            try {
+                BufferedReader br = new BufferedReader(new InputStreamReader(outputFile.getInputStream()));
+                String expectedLine = null;
+                while((expectedLine = br.readLine()) != null){
+                    sb.append(expectedLine).append("\n");
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
-        return sb.toString();
+
+            return sb.toString();
+        });
     }
 
     public VirtualFile getPackageIoDirectory() {
@@ -125,22 +128,4 @@ public class IOFileManager {
     public String getInputPath(String fileNumber){
         return packageIoDirectory.getPath() + File.separator + INPUT_FILE_NAME + fileNumber;
     }
-
-    //    private PsiElement getBojElement(PsiClass psiClass) {
-//        final PsiElement[] ret = new PsiElement[1];
-//
-//        psiClass.accept(new PsiRecursiveElementWalkingVisitor() {
-//            @Override
-//            public void visitElement(@NotNull PsiElement element) {
-//                super.visitElement(element);
-//
-//                if (element instanceof PsiComment && element.getText().contains("/* boj ")) {
-//                    ret[0] = element;
-//                    super.stopWalking();
-//                }
-//            }
-//        });
-//
-//        return ret[0];
-//    }
 }
