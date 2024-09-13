@@ -35,12 +35,13 @@ import java.util.Optional;
 public class CompositeJudgeProcessHandler extends OSProcessHandler {
     ConsoleView consoleView;
     PsiJavaFile psiJavaFile;
+    boolean isUpdateFile;
+
     VirtualFile directory;
     Project project;
-    String path;
     String compilePath;
     String packageName;
-    boolean isUpdateWijDirectory;
+    String qualifiedName;
 
     List<JudgeTask> judgeTaskList;
     JudgeProcessHandler curProcessHandler;
@@ -51,12 +52,12 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
         super(commandLine);
 
         this.consoleView = judgeEnvironment.getConsoleView();
-        this.psiJavaFile =  judgeEnvironment.getPsiJavaFile();
-        this.directory = psiJavaFile.getVirtualFile().getParent();
-        this.project = psiJavaFile.getProject();
-        this.path = this.directory.getPath();
-        this.packageName = psiJavaFile.getPackageName();
-        this.isUpdateWijDirectory = judgeEnvironment.isUpdateWijDirectory();
+        this.psiJavaFile =  judgeEnvironment.getOptions().getPsiJavaFile();
+        this.isUpdateFile = judgeEnvironment.getOptions().isUpdateFile();
+        this.project = judgeEnvironment.getOptions().getProject();
+        this.directory = judgeEnvironment.getOptions().getDirectory();
+        this.packageName = judgeEnvironment.getOptions().getPackageName();
+        this.qualifiedName = judgeEnvironment.getOptions().getQualifiedName();
 
         this.judgeTaskList = new ArrayList<>();
         this.isCanceled = false;
@@ -86,7 +87,7 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                             "                       |___/                       \n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
                     consoleView.print("===================================================\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
                     ioFileManager = new IOFileManager(project,packageName);
-                    if(isUpdateWijDirectory) updateWijDirectory();
+                    if(isUpdateFile) updateWijDirectory();
 
                     List<String> inputNumberList = ioFileManager.getInputNumberList();
                     compilePath = WijDirectoryManager.getInstance(project).getCompileDirectory().getPath();
@@ -102,8 +103,7 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                     }
                     consoleView.print("===================================================\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
 
-
-                    if(result.isAllAccepted()) copyToClipBoard();
+                    if(result.isAllAccepted()) ClipBoardUtil.copy(psiJavaFile);
                 } catch (HttpStatusException e) {
                     ApplicationManager.getApplication().invokeAndWait(() -> {
                         Messages.showErrorDialog("올바른 문제 번호를 입력해주세요.","WangJun Intellij Judge");
@@ -141,10 +141,9 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
     public void compile() throws ExecutionException {
         GeneralCommandLine commandLine = new GeneralCommandLine("javac","-Xlint:none","-nowarn", "-d",compilePath,"Main.java");
-        commandLine.setWorkDirectory(path);
+        commandLine.setWorkDirectory(directory.getPath());
         OSProcessHandler processHandler = new CompileProcessHandler(commandLine);
         ProcessTerminatedListener.attach(processHandler);
-
         consoleView.attachToProcess(processHandler);
         consoleView.print("Compile Main.java\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
 
@@ -156,7 +155,6 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
     public void initJudgeTaskList(List<String> inputNumberList){
         for(String inputNumber : inputNumberList){
-            String qualifiedName = packageName + (packageName.isEmpty() ? "Main":".Main");
             GeneralCommandLine commandLine = new GeneralCommandLine("java","-Dfile.encoding=UTF-8","-cp",compilePath,qualifiedName);
             commandLine.withInput(new File(ioFileManager.getInputPath(inputNumber)));
             judgeTaskList.add(new JudgeTask(inputNumber,commandLine));
@@ -236,15 +234,4 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
         return true;
     }
-
-    private void copyToClipBoard(){
-        String sourceCode = this.psiJavaFile.getText();
-        if(!this.packageName.isEmpty()) {
-            String packageCode = "package " + this.packageName + ";";
-            sourceCode = sourceCode.replaceFirst(packageCode,"");
-        }
-
-        ClipBoardUtil.copy(sourceCode.trim());
-    }
-
 }

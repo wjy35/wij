@@ -2,28 +2,22 @@ package com.wjy35.wij.run.judge.environment;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.psi.PsiJavaFile;
+import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationOptions;
 
 public class JudgeEnvironment {
     private final ConsoleView consoleView;
-    private final PsiJavaFile psiJavaFile;
-    private boolean updateWijDirectory;
+    private final JudgeRunConfigurationOptions options;
 
-
-    public JudgeEnvironment(ConsoleView consoleView, PsiJavaFile psiJavaFile, boolean updateWijDirectory) {
+    public JudgeEnvironment(ConsoleView consoleView, JudgeRunConfigurationOptions options) {
         this.consoleView = consoleView;
-        this.psiJavaFile = psiJavaFile;
-        this.updateWijDirectory = updateWijDirectory;
+        this.options = options;
     }
 
     public ConsoleView getConsoleView() {
         return consoleView;
     }
 
-    public PsiJavaFile getPsiJavaFile() {
-        return psiJavaFile;
-    }
-
-    public boolean isUpdateWijDirectory() {
-        return updateWijDirectory;
+    public JudgeRunConfigurationOptions getOptions() {
+        return options;
     }
 }

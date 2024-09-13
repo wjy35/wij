@@ -1,7 +1,8 @@
 package com.wjy35.wij.run.judge;
 
 import com.intellij.execution.*;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.psi.PsiJavaFile;
 import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationFactory;
 import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationOptions;
@@ -24,20 +25,22 @@ public class JudgeExecutor {
     }
 
     private void execute(boolean updateFile){
-        Project project = this.psiJavaFile.getProject();
-
         JudgeRunConfigurationType type = new JudgeRunConfigurationType();
-        JudgeRunConfigurationOptions options = new JudgeRunConfigurationOptions(this.psiJavaFile,updateFile);
+        JudgeRunConfigurationOptions options = new JudgeRunConfigurationOptions(psiJavaFile,updateFile);
         JudgeRunConfigurationFactory factory = new JudgeRunConfigurationFactory(type, options);
 
-        String qualifiedName = this.psiJavaFile.getPackageName()
-                + (this.psiJavaFile.getPackageName().isEmpty() ? "Main": ".Main");
-
-        RunManager runManager = RunManager.getInstance(project);
-        RunnerAndConfigurationSettings settings = runManager.createConfiguration(qualifiedName, factory);
+        RunManager runManager = RunManager.getInstance(options.getProject());
+        RunnerAndConfigurationSettings settings = runManager.createConfiguration(options.getQualifiedName(), factory);
 
         Executor executor = ExecutorRegistry.getInstance().getExecutorById("Run");
-        ProgramRunnerUtil.executeConfiguration(settings, executor);
+        if(executor==null) return;
+
+        new Task.Backgroundable(options.getProject(), "Start Test",true){
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                ProgramRunnerUtil.executeConfiguration(settings, executor);
+            }
+        }.queue();
 
         runManager.addConfiguration(settings);
         runManager.setSelectedConfiguration(settings);
