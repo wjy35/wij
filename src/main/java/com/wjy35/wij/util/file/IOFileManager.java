@@ -42,23 +42,19 @@ public class IOFileManager {
 
     public void deleteFiles(){
         WriteCommandAction.runWriteCommandAction(project, () -> {
-            try {
-                VirtualFile inputFile;
-                VirtualFile outputFile;
-
-                int number = START_FILE_NUMBER;
-                while(number<MAX_FILE_COUNT) {
-                    inputFile = this.packageIoDirectory.findChild(INPUT_FILE_NAME + number);
-                    outputFile = this.packageIoDirectory.findChild(OUTPUT_FILE_NAME + number);
-
-                    if(inputFile != null) inputFile.delete(null);
-                    if(outputFile != null) outputFile.delete(null);
-                    number++;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            for(VirtualFile child : this.packageIoDirectory.getChildren()) deleteFile(child);
         });
+    }
+
+    private void deleteFile(VirtualFile file){
+        if(file.getName().matches("^(input|output)[0-9]$")) {
+            try {
+                file.delete(null);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 
     public void saveAll(List<BojCrawlResult> crawlResultList) {
