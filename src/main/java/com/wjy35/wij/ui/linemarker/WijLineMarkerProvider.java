@@ -52,7 +52,7 @@ public class WijLineMarkerProvider implements LineMarkerProvider {
         @Override
         public void navigate(MouseEvent mouseEvent, PsiElement psiElement) {
             DataContext dataContext = DataManager.getInstance().getDataContext(mouseEvent.getComponent());
-            ActionGroup actionGroup = (ActionGroup) ActionManager.getInstance().getAction("com.wjy35.wij.run");
+            ActionGroup actionGroup = (ActionGroup) ActionManager.getInstance().getAction("com.wjy35.wij");
 
             ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup("WIJ Run",actionGroup,dataContext,null,false,null);
             popup.show(new RelativePoint(mouseEvent));
