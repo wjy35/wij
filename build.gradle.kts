@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.wjy35"
-version = "1.0.1"
+version = "1.0.2"
 
 repositories {
     mavenCentral()

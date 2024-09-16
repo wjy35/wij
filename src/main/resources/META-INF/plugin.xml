@@ -25,13 +25,13 @@
 <br>
 
 <ol>
-  <li>크롤링을 통한 테스트 가능</li>
-  <li>커스텀 데이터 테스트 가능</li>
-  <li>사용하기 쉬운 UI 제공</li>
-  <li>테스트 모두 통과시 클립보드 자동 복사 지원</li>
+  <li>Test via web crawling</li>
+  <li>Allows testing with custom data</li>
+  <li>Provides an easy-to-use UI</li>
+  <li>Automatically copies to clipboard upon passing all tests</li>
 </ol>
 
-태그: 백준 BaekJoon Boj BOJ 왕준 WangJun
+Tag: 백준 BaekJoon Boj BOJ 왕준 WangJun
 ]]></description>
 
     <!-- Product and plugin compatibility requirements.
