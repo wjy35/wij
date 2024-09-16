@@ -14,6 +14,7 @@ import java.util.List;
 public class IOFileManager {
     public static final String INPUT_FILE_NAME = "input";
     public static final String OUTPUT_FILE_NAME = "output";
+    public static final String BOJ_FILE_LEGULAR_EXPRESSION = "^(" + INPUT_FILE_NAME + "|" + OUTPUT_FILE_NAME+ ")[0-9]$";
     public static final int MAX_FILE_COUNT = 10;
     public static final int START_FILE_NUMBER = 0;
 
@@ -47,7 +48,7 @@ public class IOFileManager {
     }
 
     private void deleteFile(VirtualFile file){
-        if(file.getName().matches("^(input|output)[0-9]$")) {
+        if(file.getName().matches(BOJ_FILE_LEGULAR_EXPRESSION)) {
             try {
                 file.delete(null);
             } catch (IOException e) {
@@ -60,7 +61,7 @@ public class IOFileManager {
         return ReadAction.compute(()->{
             VirtualFile firstFile = null;
             for(VirtualFile child :this.packageIoDirectory.getChildren()){
-                if(child.getName().matches("^(input|output)[0-9]$")) {
+                if(child.getName().matches(BOJ_FILE_LEGULAR_EXPRESSION)) {
                     firstFile = child;
                     break;
                 }
