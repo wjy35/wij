@@ -54,7 +54,20 @@ public class IOFileManager {
                 throw new RuntimeException(e);
             }
         }
+    }
 
+    public VirtualFile findFirstFile(){
+        return ReadAction.compute(()->{
+            VirtualFile firstFile = null;
+            for(VirtualFile child :this.packageIoDirectory.getChildren()){
+                if(child.getName().matches("^(input|output)[0-9]$")) {
+                    firstFile = child;
+                    break;
+                }
+            }
+
+            return firstFile;
+        });
     }
 
     public void saveAll(List<BojCrawlResult> crawlResultList) {
