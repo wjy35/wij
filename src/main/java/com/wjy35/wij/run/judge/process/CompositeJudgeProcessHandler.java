@@ -8,12 +8,14 @@ import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.InvalidVirtualFileAccessException;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiJavaFile;
 import com.wjy35.wij.run.judge.console.JudgeConsolePrinter;
 import com.wjy35.wij.run.judge.environment.JudgeEnvironment;
 import com.wjy35.wij.run.judge.exception.ProblemNumberInputCanceledException;
 import com.wjy35.wij.run.judge.task.JudgeTask;
+import com.wjy35.wij.ui.dialog.FileDeletedDuringJudgeExceptionDialog;
 import com.wjy35.wij.ui.dialog.JudgeErrorDialog;
 import com.wjy35.wij.ui.dialog.ProblemNumberDialog;
 import com.wjy35.wij.util.clipboard.ClipBoardUtil;
@@ -109,8 +111,11 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                 } catch (IOException | ExecutionException e) {
                     consolePrinter.printProcessCanceledMessage();
                     JudgeErrorDialog.showTryLater();
-                } catch (ProblemNumberInputCanceledException e){
+                } catch (ProblemNumberInputCanceledException ignored){
                     consolePrinter.printProcessCanceledMessage();
+                } catch (InvalidVirtualFileAccessException e){
+                    consolePrinter.printProcessCanceledMessage();
+                    FileDeletedDuringJudgeExceptionDialog.show();
                 }finally {
                     destroyProcess();
                     CompositeJudgeProcessHandler.super.startNotify();
