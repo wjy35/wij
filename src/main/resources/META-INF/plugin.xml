@@ -59,8 +59,8 @@
                 <keyboard-shortcut first-keystroke="control alt U" keymap="Mac OS X" replace-all="true"/>
             </action>
             <separator/>
-            <action id="com.wjy35.wij.focus" class="com.wjy35.wij.focus.io.DirectoryFocusAction" text="Go to IO Directory" icon="/icons/upFolder.svg" >
-            </action>
+            <action class="com.wjy35.wij.focus.io.DirectoryFocusAction" text="Go to I/O Directory" icon="AllIcons.Nodes.Folder" />
+            <action class="com.wjy35.wij.focus.io.InputFocusAction" text="Open First File" icon="AllIcons.Actions.ListFiles"/>
 
             <action id="com.wjy35.wij.run.delete.DeleteAction" class="com.wjy35.wij.run.delete.DeleteAction" text="Delete All Files" icon="/icons/delete.svg">
                 <keyboard-shortcut first-keystroke="control alt D" keymap="$default" replace-all="true"/>
