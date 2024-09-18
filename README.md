@@ -1,15 +1,17 @@
 # Baekjoon Online Judge Plugin for IntelliJ IDEA
 ![Static Badge](https://img.shields.io/badge/Intellij%20IDEA-plugin-gray?style=plastic&logo=IntellijIDEA&color=%236699CC)
+<a href="https://plugins.jetbrains.com/plugin/25310-wij" target="_blank" rel="noopener noreferrer">
 ![Static Badge](https://img.shields.io/badge/WangJun%20Intellij%20Judge-v1.0.2-good?style=plastic&color=%236699CC)
+</a>
 <a href="https://www.acmicpc.net/" target="_blank" rel="noopener noreferrer">
 ![Static Badge](https://img.shields.io/badge/BaeJoon%20Online%20Judge-%238E8E93?style=plastic)
 </a>
 
 ##### 백준의 문제 코드를 작성하고 쉽게 테스트해볼 수 있는 플러그인 입니다.
-- 크롤링을 통한 테스트 가능 
-- 커스텀 데이터 테스트 가능 
-- 사용하기 쉬운 UI 제공
-- 테스트 모두 통과시 클립보드 자동 복사 지원
+- 크롤링을 통한 테스트 지원 
+- 커스텀 데이터 테스트 지원
+- 사용하기 쉬운 UI
+- 테스트 모두 통과시 클립보드 자동 복사
 
 <br>
 
@@ -37,6 +39,33 @@
 
 ##### 모든 테스트 케이스를 통과하면 클립보드에 복사됩니다.
 <img src="/src/main/resources/readme/result.gif" width="500" />
+<br>
+
+## Keymap
+
+#### How to Set Up a Keymap?
+- Intellij -> Setting -> Keymap -> Wij 검색
+  
+<img src="/src/main/resources/readme/keymap.png" width="500" alt="Keymap Image"/>
+
+<br>
+
+#### Default Keymap
+
+##### Window
+| Run                      | Keymap                        |
+|:--------------------------|:-----------------------------------|
+| Judge                      | Control + Alt + J    |
+| Update Input File & Judge  | Control + Alt + U |
+| Delete                   | Control + Alt + D |
+
+##### Mac
+| Run                      | Keymap                        |
+|:--------------------------|:-----------------------------------|
+| Judge                      | Control + Option + J    |
+| Update Input File & Judge  | Control + Option + U |
+| Delete | Control + Option + D |
+
 <br>
 
 ## General Information
