@@ -1,6 +1,6 @@
 # Baekjoon Online Judge Plugin for IntelliJ IDEA
 ![Static Badge](https://img.shields.io/badge/Intellij%20IDEA-plugin-gray?style=plastic&logo=IntellijIDEA&color=%236699CC)
-![Static Badge](https://img.shields.io/badge/WangJun%20Intellij%20Judge-v1.0.0-good?style=plastic&color=%236699CC)
+![Static Badge](https://img.shields.io/badge/WangJun%20Intellij%20Judge-v1.0.2-good?style=plastic&color=%236699CC)
 <a href="https://www.acmicpc.net/" target="_blank" rel="noopener noreferrer">
 ![Static Badge](https://img.shields.io/badge/BaeJoon%20Online%20Judge-%238E8E93?style=plastic)
 </a>
@@ -16,7 +16,7 @@
 ## How to use?
 
 ##### [백준 Java 제출 규칙](https://help.acmicpc.net/language/info)에 맞는 코드를 작성하세요.
-#### package는 추가해도 괜찮습니다!
+##### package는 추가해도 괜찮습니다!
 
 ##### Main class, main Method 옆에 Run 아이콘이 활성화 됩니다.
 | Run                       | Description                        |
@@ -24,12 +24,14 @@
 | Judge                     | 가장 최근 Update 된 Input으로 테스트를 시작합니다. |
 | Update Input File & Judge | 새롭게 Input을 Update하고 테스트를 시작합니다.    |
 | Delete All                | Input과 Output 파일을 모두 삭제합니다.        |
+| Go to I/O Directory       | io Directory 를 엽니다.                |
+| Open First File           | 첫번째 i/o 파일을 엽니다.                   |
 
 ##### Update Input & Judge 를 선택한 경우 문제 번호를 입력해주세요.
 <img src="/src/main/resources/readme/run.gif" width="476" alt="Run Image"/>
 <br>
 
-##### Compile 하고 실행하여 Output과 비교합니다.
+##### Compile 하고 실행하여 Output 과 비교합니다.
 <img src="/src/main/resources/readme/process.gif" width="500" alt="Process Image"/>
 <br>
 
@@ -74,4 +76,3 @@
 ##### Copy to Clipboard
 - 모든 테스트 케이스를 통과했을 경우 클립보드에 복사 합니다.
 - package와 관련된 코드는 복사하지 않습니다.
-
