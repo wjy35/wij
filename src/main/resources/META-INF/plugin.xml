@@ -31,6 +31,16 @@
   <li>Automatically copies to clipboard upon passing all tests</li>
 </ol>
 
+<br>
+<h3>Usage</h3>
+<bt>
+Write code that conforms to <a href="https://help.acmicpc.net/language/info" target="_blank">Baekjoon Online Judge’s Java submission rules</a>.<br>
+It is okay to add a package.<br>
+A Run icon will be enabled next to the Main class and the main method. <br>
+If you have selected “Update Input & Judge”, please enter the problem number. <br>
+Compile and run the code to compare the output. <br>
+If all test cases pass, the result will be copied to the clipboard. <br>
+
 Tag: 백준 BaekJoon Boj BOJ 왕준 WangJun
 ]]></description>
 
