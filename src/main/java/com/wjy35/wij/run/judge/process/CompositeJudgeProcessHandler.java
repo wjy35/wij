@@ -135,7 +135,7 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
     public void compile() throws ExecutionException {
         compilePath = WijDirectoryManager.getInstance(project).getCompileDirectory().getPath();
 
-        GeneralCommandLine commandLine = new GeneralCommandLine("javac","-Xlint:none","-nowarn", "-d",compilePath,"Main.java");
+        GeneralCommandLine commandLine = new GeneralCommandLine("javac","-encoding","UTF-8","-Xlint:none","-nowarn", "-d",compilePath,"Main.java");
         commandLine.setWorkDirectory(directory.getPath());
 
         OSProcessHandler processHandler = new CompileProcessHandler(commandLine);
