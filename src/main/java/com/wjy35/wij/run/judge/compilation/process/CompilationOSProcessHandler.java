@@ -1,4 +1,4 @@
-package com.wjy35.wij.run.judge.process;
+package com.wjy35.wij.run.judge.compilation.process;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -7,8 +7,8 @@ import com.intellij.execution.process.ProcessOutputTypes;
 import com.intellij.openapi.util.Key;
 import org.jetbrains.annotations.NotNull;
 
-public class CompileProcessHandler extends OSProcessHandler {
-    public CompileProcessHandler(@NotNull GeneralCommandLine commandLine) throws ExecutionException {
+public class CompilationOSProcessHandler extends OSProcessHandler {
+    public CompilationOSProcessHandler(@NotNull GeneralCommandLine commandLine) throws ExecutionException {
         super(commandLine);
     }
 

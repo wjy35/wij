@@ -25,10 +25,6 @@ public class JudgeConsolePrinter {
         consoleView.print(separator, ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
     }
 
-    public void printCompileMessage(){
-        consoleView.print("Compile Main.java\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
-    }
-
     public void printProcessCanceledMessage(){
         consoleView.print("is Canceled", ConsoleViewContentType.LOG_WARNING_OUTPUT);
     }

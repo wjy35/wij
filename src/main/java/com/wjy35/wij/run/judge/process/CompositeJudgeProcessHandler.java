@@ -11,6 +11,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.InvalidVirtualFileAccessException;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiJavaFile;
+import com.wjy35.wij.run.judge.compilation.CompilationStep;
+import com.wjy35.wij.run.judge.compilation.exception.CompilationFailedException;
 import com.wjy35.wij.run.judge.console.JudgeConsolePrinter;
 import com.wjy35.wij.run.judge.environment.JudgeEnvironment;
 import com.wjy35.wij.run.judge.exception.ProblemNumberInputCanceledException;
@@ -58,7 +60,6 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
         this.directory = judgeEnvironment.getOptions().getDirectory();
         this.packageName = judgeEnvironment.getOptions().getPackageName();
         this.qualifiedName = judgeEnvironment.getOptions().getQualifiedName();
-
         this.consolePrinter = new JudgeConsolePrinter(consoleView);
 
         this.isCanceled = false;
@@ -89,9 +90,8 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                     ioFileManager = new IOFileManager(project,packageName);
                     if(isUpdateFile) updateWijDirectory();
 
-                    consolePrinter.printCompileMessage();
-                    compile();
-                    consolePrinter.printSeparator();
+                    compilePath = WijDirectoryManager.getInstance(project).getCompileDirectory().getPath();
+                    CompilationStep.executeWith(consoleView, directory.getPath(), compilePath);
 
                     List<String> inputNumberList = ioFileManager.getInputNumberList();
                     List<JudgeTask> judgeTaskList = initJudgeTaskList(inputNumberList);
@@ -102,6 +102,8 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
                     if(totalJudgeResult.isAllAccepted()) ClipBoardUtil.copy(psiJavaFile);
 
+                }catch (CompilationFailedException e){
+                    // ToDo Handler
                 } catch (HttpStatusException e) {
                     consolePrinter.printProcessCanceledMessage();
                     JudgeErrorDialog.showWrongProblemNumber();
@@ -130,20 +132,6 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
         ioFileManager.deleteFiles();
         ioFileManager.saveAll(BojCrawler.crawlAll(problemNumber));
-    }
-
-    public void compile() throws ExecutionException {
-        compilePath = WijDirectoryManager.getInstance(project).getCompileDirectory().getPath();
-
-        GeneralCommandLine commandLine = new GeneralCommandLine("javac","-encoding","UTF-8","-Xlint:none","-nowarn", "-d",compilePath,"Main.java");
-        commandLine.setWorkDirectory(directory.getPath());
-
-        OSProcessHandler processHandler = new CompileProcessHandler(commandLine);
-        ProcessTerminatedListener.attach(processHandler);
-        consoleView.attachToProcess(processHandler);
-
-        processHandler.startNotify();
-        processHandler.waitFor();
     }
 
     public List<JudgeTask> initJudgeTaskList(List<String> inputNumberList){
