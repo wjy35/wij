@@ -22,14 +22,14 @@ public class IOFileManager {
     private final VirtualFile packageIoDirectory;
     public IOFileManager(Project project, String packageName) {
         this.project = project;
-        this.packageIoDirectory = WijDirectoryManager.getInstance(project)
-                .getOrMakePackageIoDirectory(packageName);
+        this.packageIoDirectory = WIJDirectoryProvider.getInstance(project)
+                .getOrCreatePackageIO(packageName);
     }
 
     public void deleteDirectory(){
         WriteCommandAction.runWriteCommandAction(project, () -> {
             try {
-                if(WijDirectoryManager.IO_FILE_DIRECTORY_NAME.equals(this.packageIoDirectory.getName())){
+                if(WIJDirectoryProvider.IO_FILE_DIRECTORY_NAME.equals(this.packageIoDirectory.getName())){
                     deleteFiles();
                     return;
                 }

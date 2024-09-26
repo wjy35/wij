@@ -23,7 +23,7 @@ import com.wjy35.wij.ui.dialog.ProblemNumberDialog;
 import com.wjy35.wij.util.clipboard.ClipBoardUtil;
 import com.wjy35.wij.util.crawling.BojCrawler;
 import com.wjy35.wij.util.file.IOFileManager;
-import com.wjy35.wij.util.file.WijDirectoryManager;
+import com.wjy35.wij.util.file.WIJDirectoryProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.HttpStatusException;
 import java.io.File;
@@ -90,7 +90,7 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                     ioFileManager = new IOFileManager(project,packageName);
                     if(isUpdateFile) updateWijDirectory();
 
-                    compilePath = WijDirectoryManager.getInstance(project).getCompileDirectory().getPath();
+                    compilePath = WIJDirectoryProvider.getInstance(project).getOrCreateCompile().getPath();
                     CompilationStep.executeWith(consoleView, directory.getPath(), compilePath);
 
                     List<String> inputNumberList = ioFileManager.getInputNumberList();
