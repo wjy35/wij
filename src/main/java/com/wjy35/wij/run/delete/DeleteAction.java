@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
-import com.wjy35.wij.util.file.IOFileManager;
+import com.wjy35.wij.util.file.IOFileCommand;
 import org.jetbrains.annotations.NotNull;
 
 public class DeleteAction extends AnAction {
@@ -15,6 +15,6 @@ public class DeleteAction extends AnAction {
         if(element==null) return;
         if(!(element instanceof PsiJavaFile psiJavaFile)) return;
 
-        new IOFileManager(psiJavaFile.getProject(),psiJavaFile.getPackageName()).deleteDirectory();
+        new IOFileCommand(psiJavaFile.getProject(),psiJavaFile.getPackageName()).deleteDirectory();
     }
 }

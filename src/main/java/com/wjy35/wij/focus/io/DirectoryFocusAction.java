@@ -5,9 +5,10 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
-import com.wjy35.wij.util.file.IOFileManager;
+import com.wjy35.wij.util.file.WIJDirectoryProvider;
 import org.jetbrains.annotations.NotNull;
 
 public class DirectoryFocusAction extends AnAction {
@@ -18,8 +19,11 @@ public class DirectoryFocusAction extends AnAction {
         if(!(element instanceof PsiJavaFile psiJavaFile)) return;
 
         ApplicationManager.getApplication().invokeLater(()->{
-            IOFileManager ioFileManager = new IOFileManager(psiJavaFile.getProject(),psiJavaFile.getPackageName());
-            ProjectView.getInstance(psiJavaFile.getProject()).select(null, ioFileManager.getPackageIoDirectory(), true);
+            VirtualFile targetDirectory = WIJDirectoryProvider.getInstance(psiJavaFile.getProject())
+                    .getOrCreatePackageIO(psiJavaFile.getPackageName());
+
+            ProjectView.getInstance(psiJavaFile.getProject())
+                    .select(null, targetDirectory, true);
         });
     }
 }

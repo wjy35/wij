@@ -31,6 +31,12 @@ public class WIJDirectoryProvider {
         return getOrCreateDirectory(getOrMakeDirectoryWIJ(), IO_FILE_DIRECTORY_NAME);
     }
 
+    public VirtualFile getPackageIO(String packageName) {
+        if(packageName.isEmpty()) return getOrCreateIO();
+
+        return getOrCreateIO().findChild(packageName);
+    }
+
     public VirtualFile getOrCreatePackageIO(String packageName) {
         if(packageName.isEmpty()) return getOrCreateIO();
 

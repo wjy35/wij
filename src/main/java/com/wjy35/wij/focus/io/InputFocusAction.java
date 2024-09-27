@@ -10,7 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import com.wjy35.wij.ui.dialog.InputFocusErrorDialog;
-import com.wjy35.wij.util.file.IOFileManager;
+import com.wjy35.wij.util.file.IOFileQuery;
 import org.jetbrains.annotations.NotNull;
 
 public class InputFocusAction extends AnAction {
@@ -21,9 +21,9 @@ public class InputFocusAction extends AnAction {
         if(!(element instanceof PsiJavaFile psiJavaFile)) return;
 
         ApplicationManager.getApplication().invokeLater(()->{
-            IOFileManager ioFileManager = new IOFileManager(psiJavaFile.getProject(),psiJavaFile.getPackageName());
+            IOFileQuery ioFileQuery = new IOFileQuery(psiJavaFile.getProject(),psiJavaFile.getPackageName());
 
-            VirtualFile firstFile = ioFileManager.findFirstFile();
+            VirtualFile firstFile = ioFileQuery.findFirstFile();
             if(firstFile==null){
                 InputFocusErrorDialog.show();
                 return;

@@ -22,7 +22,9 @@ import com.wjy35.wij.ui.dialog.JudgeErrorDialog;
 import com.wjy35.wij.ui.dialog.ProblemNumberDialog;
 import com.wjy35.wij.util.clipboard.ClipBoardUtil;
 import com.wjy35.wij.util.crawling.BojCrawler;
-import com.wjy35.wij.util.file.IOFileManager;
+import com.wjy35.wij.util.file.IOFileCommand;
+import com.wjy35.wij.util.file.IOFileQuery;
+import com.wjy35.wij.util.file.IOFileUtil;
 import com.wjy35.wij.util.file.WIJDirectoryProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.HttpStatusException;
@@ -49,7 +51,9 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
     boolean isCanceled;
 
     JudgeConsolePrinter consolePrinter;
-    IOFileManager ioFileManager;
+    IOFileCommand ioFileCommand;
+    IOFileQuery ioFileQuery;
+
     public CompositeJudgeProcessHandler(@NotNull GeneralCommandLine commandLine, JudgeEnvironment judgeEnvironment) throws ExecutionException {
         super(commandLine);
 
@@ -87,14 +91,16 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                     consolePrinter.printStartMessage();
                     consolePrinter.printSeparator();
 
-                    ioFileManager = new IOFileManager(project,packageName);
+                    ioFileCommand = new IOFileCommand(project,packageName);
                     if(isUpdateFile) updateWijDirectory();
 
                     compilePath = WIJDirectoryProvider.getInstance(project).getOrCreateCompile().getPath();
                     CompilationStep.executeWith(consoleView, directory.getPath(), compilePath);
 
-                    List<String> inputNumberList = ioFileManager.getInputNumberList();
-                    List<JudgeTask> judgeTaskList = initJudgeTaskList(inputNumberList);
+                    ioFileQuery = new IOFileQuery(project,packageName);
+
+                    List<String> ioFileNumberList = ioFileQuery.findIOFileNumberList();
+                    List<JudgeTask> judgeTaskList = initJudgeTaskList(ioFileNumberList);
                     TotalJudgeResult totalJudgeResult = judge(judgeTaskList);
 
                     consolePrinter.printTotalJudgeResult(totalJudgeResult);
@@ -130,18 +136,19 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
         String problemNumber = Optional.ofNullable(ProblemNumberDialog.showAndGet())
                 .orElseThrow(ProblemNumberInputCanceledException::new);
 
-        ioFileManager.deleteFiles();
-        ioFileManager.saveAll(BojCrawler.crawlAll(problemNumber));
+        ioFileCommand.deleteAllIOFile();
+        ioFileCommand.saveAllBy(BojCrawler.crawlAll(problemNumber));
     }
 
-    public List<JudgeTask> initJudgeTaskList(List<String> inputNumberList){
+    public List<JudgeTask> initJudgeTaskList(List<String> ioFileNumberList){
         List<JudgeTask> judgeTaskList = new ArrayList<>();
 
-        for(String inputNumber : inputNumberList){
+        for(String ioFileNumber : ioFileNumberList){
             GeneralCommandLine commandLine = new GeneralCommandLine("java","-Dfile.encoding=UTF-8","-cp",compilePath,qualifiedName);
-            commandLine.withInput(new File(ioFileManager.getInputPath(inputNumber)));
+            commandLine.withInput(new File(ioFileQuery.fileNumberToInputFilePath(ioFileNumber)));
 
-            judgeTaskList.add(new JudgeTask(inputNumber,commandLine));
+            ioFileQuery.fileNumberToInputFilePath(ioFileNumber);
+            judgeTaskList.add(new JudgeTask(ioFileNumber,commandLine));
         }
 
         return judgeTaskList;
@@ -178,7 +185,8 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
             }
 
             String actual = curProcessHandler.getOutput();
-            String expected = ioFileManager.getExpected(task.getInputNumber());
+            String expected = IOFileUtil.getContent(ioFileQuery.findOutputFileBy(task.getInputNumber()));
+
             consolePrinter.printExpected(expected);
 
             if(new JudgeResult(actual,expected).isAccepted()){
