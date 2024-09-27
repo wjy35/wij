@@ -15,6 +15,6 @@ public class JudgeAction extends AnAction {
         if(element==null) return;
         if(!(element instanceof PsiJavaFile psiJavaFile)) return;
 
-        new JudgeExecutor(psiJavaFile).executeWithoutUpdate();
+        new JudgeExecutor(psiJavaFile).executeWithoutFetch();
     }
 }

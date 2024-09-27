@@ -14,6 +14,6 @@ public class UpdateAndJudgeAction extends AnAction {
         if(element==null) return;
         if(!(element instanceof PsiJavaFile psiJavaFile)) return;
 
-        new JudgeExecutor(psiJavaFile).executeWithUpdate();
+        new JudgeExecutor(psiJavaFile).executeWithFetch();
     }
 }

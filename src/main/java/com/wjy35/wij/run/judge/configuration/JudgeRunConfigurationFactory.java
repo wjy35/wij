@@ -22,7 +22,7 @@ public class JudgeRunConfigurationFactory extends ConfigurationFactory {
         this.id = JudgeRunConfigurationType.ID
                 + options.getPsiJavaFile().getPackageName()
                 + options.getPsiJavaFile().getName()
-                + options.isUpdateFile();
+                + options.isFetchRequired();
     }
 
     @Override

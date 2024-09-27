@@ -16,17 +16,17 @@ public class JudgeExecutor {
         this.psiJavaFile = psiJavaFile;
     }
 
-    public void executeWithoutUpdate(){
+    public void executeWithoutFetch(){
         execute(false);
     }
 
-    public void executeWithUpdate(){
+    public void executeWithFetch(){
         execute(true);
     }
 
-    private void execute(boolean updateFile){
+    private void execute(boolean isFetchRequired){
         JudgeRunConfigurationType type = new JudgeRunConfigurationType();
-        JudgeRunConfigurationOptions options = new JudgeRunConfigurationOptions(psiJavaFile,updateFile);
+        JudgeRunConfigurationOptions options = new JudgeRunConfigurationOptions(psiJavaFile,isFetchRequired);
         JudgeRunConfigurationFactory factory = new JudgeRunConfigurationFactory(type, options);
 
         RunManager runManager = RunManager.getInstance(options.getProject());

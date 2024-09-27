@@ -8,15 +8,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class JudgeRunConfigurationOptions extends LocatableRunConfigurationOptions {
     private final PsiJavaFile psiJavaFile;
-    private final boolean updateFile;
+    private final boolean isFetchRequired;
     private final Project project;
     private final VirtualFile directory;
     private final String packageName;
     private final String qualifiedName;
 
-    public JudgeRunConfigurationOptions(@NotNull PsiJavaFile psiJavaFile,@NotNull boolean updateFile) {
+    public JudgeRunConfigurationOptions(@NotNull PsiJavaFile psiJavaFile,@NotNull boolean isFetchRequired) {
         this.psiJavaFile = psiJavaFile;
-        this.updateFile = updateFile;
+        this.isFetchRequired = isFetchRequired;
         this.directory = psiJavaFile.getVirtualFile().getParent();
         this.project = psiJavaFile.getProject();
         this.packageName = psiJavaFile.getPackageName();
@@ -28,8 +28,8 @@ public class JudgeRunConfigurationOptions extends LocatableRunConfigurationOptio
         return psiJavaFile;
     }
 
-    public boolean isUpdateFile() {
-        return updateFile;
+    public boolean isFetchRequired() {
+        return isFetchRequired;
     }
 
     public Project getProject() {

@@ -16,6 +16,10 @@ import com.wjy35.wij.run.judge.compilation.exception.CompilationFailedException;
 import com.wjy35.wij.run.judge.console.JudgeConsolePrinter;
 import com.wjy35.wij.run.judge.environment.JudgeEnvironment;
 import com.wjy35.wij.run.judge.exception.ProblemNumberInputCanceledException;
+import com.wjy35.wij.run.judge.fetch.FetchStep;
+import com.wjy35.wij.run.judge.fetch.exception.FetchFailedException;
+import com.wjy35.wij.run.judge.fetch.exception.InternetConnectionLostException;
+import com.wjy35.wij.run.judge.fetch.exception.InternetConnectionUnavailableException;
 import com.wjy35.wij.run.judge.task.JudgeTask;
 import com.wjy35.wij.ui.dialog.FileDeletedDuringJudgeExceptionDialog;
 import com.wjy35.wij.ui.dialog.JudgeErrorDialog;
@@ -27,10 +31,9 @@ import com.wjy35.wij.util.file.IOFileQuery;
 import com.wjy35.wij.util.file.IOFileUtil;
 import com.wjy35.wij.util.file.WIJDirectoryProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jsoup.HttpStatusException;
+
 import java.io.File;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +42,7 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
     /* Option Data */
     ConsoleView consoleView;
     PsiJavaFile psiJavaFile;
-    boolean isUpdateFile;
+    boolean isFetchRequired;
     VirtualFile directory;
     Project project;
     String packageName;
@@ -59,7 +62,7 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
         this.consoleView = judgeEnvironment.getConsoleView();
         this.psiJavaFile =  judgeEnvironment.getOptions().getPsiJavaFile();
-        this.isUpdateFile = judgeEnvironment.getOptions().isUpdateFile();
+        this.isFetchRequired = judgeEnvironment.getOptions().isFetchRequired();
         this.project = judgeEnvironment.getOptions().getProject();
         this.directory = judgeEnvironment.getOptions().getDirectory();
         this.packageName = judgeEnvironment.getOptions().getPackageName();
@@ -92,12 +95,12 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                     consolePrinter.printSeparator();
 
                     ioFileCommand = new IOFileCommand(project,packageName);
-                    if(isUpdateFile) updateWijDirectory();
+                    ioFileQuery = new IOFileQuery(project,packageName);
+
+                    if(isFetchRequired) new FetchStep(ioFileCommand).execute();
 
                     compilePath = WIJDirectoryProvider.getInstance(project).getOrCreateCompile().getPath();
-                    CompilationStep.executeWith(consoleView, directory.getPath(), compilePath);
-
-                    ioFileQuery = new IOFileQuery(project,packageName);
+                    new CompilationStep(consoleView, directory.getPath(), compilePath).execute();
 
                     List<String> ioFileNumberList = ioFileQuery.findIOFileNumberList();
                     List<JudgeTask> judgeTaskList = initJudgeTaskList(ioFileNumberList);
@@ -109,14 +112,16 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                     if(totalJudgeResult.isAllAccepted()) ClipBoardUtil.copy(psiJavaFile);
 
                 } catch (CompilationFailedException e){
-                    // ToDo Handler
-                } catch (HttpStatusException e) {
+                    // ToDo Handle CompilationFailedException
+                } catch (FetchFailedException e){
+                    // ToDo Handle FetchFailedException
+                } catch (InternetConnectionLostException e) {
                     consolePrinter.printProcessCanceledMessage();
                     JudgeErrorDialog.showWrongProblemNumber();
-                } catch (UnknownHostException e) {
+                } catch (InternetConnectionUnavailableException e) {
                     consolePrinter.printProcessCanceledMessage();
                     JudgeErrorDialog.showInternetConnectionError();
-                } catch (IOException | ExecutionException e) {
+                } catch (ExecutionException e) {
                     consolePrinter.printProcessCanceledMessage();
                     JudgeErrorDialog.showTryLater();
                 } catch (ProblemNumberInputCanceledException ignored){
