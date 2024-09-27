@@ -21,7 +21,7 @@ import com.wjy35.wij.ui.dialog.FileDeletedDuringJudgeExceptionDialog;
 import com.wjy35.wij.ui.dialog.JudgeErrorDialog;
 import com.wjy35.wij.ui.dialog.ProblemNumberDialog;
 import com.wjy35.wij.util.clipboard.ClipBoardUtil;
-import com.wjy35.wij.util.crawling.BojCrawler;
+import com.wjy35.wij.util.crawling.BOJCrawler;
 import com.wjy35.wij.util.file.IOFileCommand;
 import com.wjy35.wij.util.file.IOFileQuery;
 import com.wjy35.wij.util.file.IOFileUtil;
@@ -108,7 +108,7 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
 
                     if(totalJudgeResult.isAllAccepted()) ClipBoardUtil.copy(psiJavaFile);
 
-                }catch (CompilationFailedException e){
+                } catch (CompilationFailedException e){
                     // ToDo Handler
                 } catch (HttpStatusException e) {
                     consolePrinter.printProcessCanceledMessage();
@@ -137,7 +137,7 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
                 .orElseThrow(ProblemNumberInputCanceledException::new);
 
         ioFileCommand.deleteAllIOFile();
-        ioFileCommand.saveAllBy(BojCrawler.crawlAll(problemNumber));
+        ioFileCommand.saveAllBy(BOJCrawler.crawlAllBy(problemNumber));
     }
 
     public List<JudgeTask> initJudgeTaskList(List<String> ioFileNumberList){

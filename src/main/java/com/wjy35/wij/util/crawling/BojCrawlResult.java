@@ -1,18 +1,18 @@
 package com.wjy35.wij.util.crawling;
 
-public class BojCrawlResult {
-    private int fileNumber;
-    private String input;
-    private String output;
+public class BOJCrawlResult {
+    private final int number;
+    private final String input;
+    private final String output;
 
-    public BojCrawlResult(int fileNumber, String input, String output) {
-        this.fileNumber = fileNumber;
+    public BOJCrawlResult(int number, String input, String output) {
+        this.number = number;
         this.input = input;
         this.output = output;
     }
 
-    public int getFileNumber() {
-        return fileNumber;
+    public int getNumber() {
+        return number;
     }
 
     public String getInput() {

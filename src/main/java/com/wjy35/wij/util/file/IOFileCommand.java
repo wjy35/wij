@@ -4,7 +4,7 @@ import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.wjy35.wij.util.crawling.BojCrawlResult;
+import com.wjy35.wij.util.crawling.BOJCrawlResult;
 
 import java.io.IOException;
 import java.util.List;
@@ -62,11 +62,11 @@ public class IOFileCommand extends IOFileOperation{
     }
 
     /* Save */
-    public void saveAllBy(List<BojCrawlResult> crawlResultList) {
-        for(BojCrawlResult crawlResult : crawlResultList) saveBy(crawlResult);
+    public void saveAllBy(List<BOJCrawlResult> crawlResultList) {
+        for(BOJCrawlResult crawlResult : crawlResultList) saveBy(crawlResult);
     }
 
-    private void saveBy(BojCrawlResult crawlResult) {
+    private void saveBy(BOJCrawlResult crawlResult) {
         try{
             tryToSaveBy(crawlResult);
         } catch (IOException e) {
@@ -74,11 +74,11 @@ public class IOFileCommand extends IOFileOperation{
         }
     }
 
-    private void tryToSaveBy(BojCrawlResult crawlResult) throws IOException {
+    private void tryToSaveBy(BOJCrawlResult crawlResult) throws IOException {
         VirtualFile packageIODirectory = WIJDirectoryProvider.getInstance(project).getOrCreatePackageIO(packageName);
 
         WriteAction.runAndWait(() -> {
-            int fileNumber =  crawlResult.getFileNumber();
+            int fileNumber =  crawlResult.getNumber();
 
             VirtualFile inputFile = packageIODirectory.findChild(INPUT_FILE_NAME + fileNumber);
             VirtualFile outputFile = packageIODirectory.findChild(OUTPUT_FILE_NAME + fileNumber);
