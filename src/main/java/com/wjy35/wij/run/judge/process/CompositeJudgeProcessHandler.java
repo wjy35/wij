@@ -137,14 +137,6 @@ public class CompositeJudgeProcessHandler extends OSProcessHandler {
         }.queue();
     }
 
-    public void updateWijDirectory() throws IOException {
-        String problemNumber = Optional.ofNullable(ProblemNumberDialog.showAndGet())
-                .orElseThrow(ProblemNumberInputCanceledException::new);
-
-        ioFileCommand.deleteAllIOFile();
-        ioFileCommand.saveAllBy(BOJCrawler.crawlAllBy(problemNumber));
-    }
-
     public List<JudgeTask> initJudgeTaskList(List<String> ioFileNumberList){
         List<JudgeTask> judgeTaskList = new ArrayList<>();
 
