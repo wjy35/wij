@@ -1,4 +1,4 @@
-package com.wjy35.wij.run.judge.configuration;
+package com.wjy35.wij.run.judge.composite;
 
 import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionException;
@@ -13,8 +13,6 @@ import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
-import com.wjy35.wij.run.judge.environment.JudgeEnvironment;
-import com.wjy35.wij.run.judge.process.CompositeJudgeProcessHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +39,7 @@ public class JudgeRunConfiguration extends LocatableConfigurationBase<JudgeRunCo
                 JudgeEnvironment judgeEnvironment = new JudgeEnvironment(consoleView,options);
 
                 GeneralCommandLine commandLine = new GeneralCommandLine("java","--version");
-                ProcessHandler processHandler = new CompositeJudgeProcessHandler(commandLine,judgeEnvironment);
+                ProcessHandler processHandler = new CompositeProcessHandler(commandLine,judgeEnvironment);
                 ProcessTerminatedListener.attach(processHandler);
                 return new DefaultExecutionResult(consoleView,processHandler);
             }

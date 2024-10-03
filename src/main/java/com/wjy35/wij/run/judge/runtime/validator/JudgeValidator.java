@@ -1,20 +1,13 @@
-package com.wjy35.wij.run.judge.process;
+package com.wjy35.wij.run.judge.runtime.validator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
-public class JudgeResult {
-    private final String actual;
-    private final String expected;
-
-    public JudgeResult(String actual, String expected) {
-        this.actual = actual;
-        this.expected = expected;
-    }
-
-    public boolean isAccepted() {
+public class JudgeValidator {
+    public static boolean isAccepted(String actual,String expected) {
         if(actual.isEmpty()) return false;
+
         try {
             BufferedReader expectedBr = new BufferedReader(new StringReader(expected));
             BufferedReader actualBr = new BufferedReader(new StringReader(actual));

@@ -4,9 +4,9 @@ import com.intellij.execution.*;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.psi.PsiJavaFile;
-import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationFactory;
-import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationOptions;
-import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationType;
+import com.wjy35.wij.run.judge.composite.JudgeRunConfigurationFactory;
+import com.wjy35.wij.run.judge.composite.JudgeRunConfigurationOptions;
+import com.wjy35.wij.run.judge.composite.JudgeRunConfigurationType;
 import org.jetbrains.annotations.NotNull;
 
 public class JudgeExecutor {

@@ -1,12 +1,9 @@
-package com.wjy35.wij.ui.dialog;
+package com.wjy35.wij.ui.dialog.judge;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.Messages;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
-public class JudgeErrorDialog {
+public class CompositeDialog {
     private static final String title = "WangJun Intellij Judge";
 
     private static void showMessage(String message) {
@@ -23,6 +20,7 @@ public class JudgeErrorDialog {
         showMessage("인터넷 연결을 확인해주세요!");
     }
 
+    public static void showFileDeleteDuringJudgeProcess(){ showMessage("실행 중 파일이 삭제 되었습니다.\n 다시 실행해주세요"); }
     public static void showTryLater(){
         showMessage("잠시후 다시 시도해주세요!");
     }

@@ -1,4 +1,4 @@
-package com.wjy35.wij.ui.dialog;
+package com.wjy35.wij.ui.dialog.judge;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.InputValidator;
@@ -7,7 +7,7 @@ import com.wjy35.wij.ui.icon.Icons;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class ProblemNumberDialog {
+public class FetchDialog {
     public static String showAndGet(){
         AtomicReference<String> problemNumber = new AtomicReference<>();
 

@@ -57,7 +57,7 @@ Tag: 백준 BaekJoon Boj BOJ 왕준 WangJun
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.wjy35.wij.ui.linemarker.WijLineMarkerProvider"/>
-        <configurationType implementation="com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationType" />
+        <configurationType implementation="com.wjy35.wij.run.judge.composite.JudgeRunConfigurationType" />
     </extensions>
 
     <actions>

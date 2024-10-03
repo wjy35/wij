@@ -1,4 +1,4 @@
-package com.wjy35.wij.run.judge.configuration;
+package com.wjy35.wij.run.judge.composite;
 
 import com.intellij.execution.configurations.LocatableRunConfigurationOptions;
 import com.intellij.openapi.project.Project;

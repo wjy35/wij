@@ -1,4 +1,4 @@
-package com.wjy35.wij.run.judge.process;
+package com.wjy35.wij.run.judge.runtime.process;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;

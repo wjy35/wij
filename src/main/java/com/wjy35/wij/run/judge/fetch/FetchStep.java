@@ -1,7 +1,7 @@
 package com.wjy35.wij.run.judge.fetch;
 
-import com.wjy35.wij.run.judge.exception.ProblemNumberInputCanceledException;
-import com.wjy35.wij.ui.dialog.ProblemNumberDialog;
+import com.wjy35.wij.run.judge.fetch.exception.ProblemNumberInputCanceledException;
+import com.wjy35.wij.ui.dialog.judge.FetchDialog;
 import com.wjy35.wij.util.file.IOFileCommand;
 
 public class FetchStep {
@@ -12,7 +12,7 @@ public class FetchStep {
     }
 
     public void execute() {
-        String problemNumber = ProblemNumberDialog.showAndGet();
+        String problemNumber = FetchDialog.showAndGet();
         if (problemNumber == null) throw new ProblemNumberInputCanceledException();
 
         fetcher.crawlAndFetch(problemNumber);

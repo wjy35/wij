@@ -1,8 +1,6 @@
-package com.wjy35.wij.run.judge.environment;
+package com.wjy35.wij.run.judge.composite;
 
 import com.intellij.execution.ui.ConsoleView;
-import com.intellij.psi.PsiJavaFile;
-import com.wjy35.wij.run.judge.configuration.JudgeRunConfigurationOptions;
 
 public class JudgeEnvironment {
     private final ConsoleView consoleView;

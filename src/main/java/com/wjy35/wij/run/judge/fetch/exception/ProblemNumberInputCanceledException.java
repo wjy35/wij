@@ -1,4 +1,4 @@
-package com.wjy35.wij.run.judge.exception;
+package com.wjy35.wij.run.judge.fetch.exception;
 
 public class ProblemNumberInputCanceledException extends RuntimeException {
 }
