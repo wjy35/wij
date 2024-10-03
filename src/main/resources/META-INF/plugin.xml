@@ -67,7 +67,7 @@ Tag: 백준 BaekJoon Boj BOJ 왕준 WangJun
                 <keyboard-shortcut first-keystroke="control alt J" keymap="Mac OS X 10.5+" replace-all="true"/>
                 <keyboard-shortcut first-keystroke="control alt J" keymap="Mac OS X" replace-all="true"/>
             </action>
-            <action id="com.wjy35.wij.run.judge.UpdateAndJudgeAction" class="com.wjy35.wij.run.judge.UpdateAndJudgeAction" text="Update Files  &amp; Judge" icon="/icons/ConcurrencyDiagramToolwindow.svg" >
+            <action id="com.wjy35.wij.run.judge.FetchAndJudgeAction" class="com.wjy35.wij.run.judge.FetchAndJudgeAction" text="Fetch I/O Files &amp; Judge" icon="/icons/ConcurrencyDiagramToolwindow.svg" >
                 <keyboard-shortcut first-keystroke="control alt U" keymap="$default" replace-all="true"/>
                 <keyboard-shortcut first-keystroke="control alt U" keymap="Mac OS X 10.5+" replace-all="true"/>
                 <keyboard-shortcut first-keystroke="control alt U" keymap="Mac OS X" replace-all="true"/>

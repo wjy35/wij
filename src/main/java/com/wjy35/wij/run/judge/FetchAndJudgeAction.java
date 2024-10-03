@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import org.jetbrains.annotations.NotNull;
 
-public class UpdateAndJudgeAction extends AnAction {
+public class FetchAndJudgeAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         PsiElement element = e.getData(CommonDataKeys.PSI_FILE);
