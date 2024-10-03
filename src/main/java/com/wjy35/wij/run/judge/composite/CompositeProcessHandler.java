@@ -70,7 +70,7 @@ public class CompositeProcessHandler extends OSProcessHandler {
                 IOFileQuery ioFileQuery = new IOFileQuery(project,packageName);
                 String compilePath = WIJDirectoryProvider.getInstance(project).getOrCreateCompile().getPath();
 
-                if(isFetchRequired) new FetchStep(ioFileCommand).execute();
+                if(isFetchRequired) new FetchStep(consoleView,ioFileCommand).execute();
 
                 new CompilationStep(consoleView, directory.getPath(), compilePath).execute();
 
@@ -79,6 +79,8 @@ public class CompositeProcessHandler extends OSProcessHandler {
 
                 if(judgeStatus==JudgeStatus.ALL_ACCEPTED){
                     ClipBoardUtil.copy(psiJavaFile);
+                    consoleWriter.writeCopyToClipBoard();
+                    consoleWriter.writeSeparator();
                 }
             }
 
@@ -86,7 +88,7 @@ public class CompositeProcessHandler extends OSProcessHandler {
             public void run(@NotNull ProgressIndicator indicator) {
                 try{
                     tryToRun(indicator);
-                } catch (CompilationFailedException | FetchFailedException | JudgeFailedException e){
+                } catch (CompilationFailedException | FetchFailedException e){
                     consoleWriter.writeProcessTerminated();
                     CompositeDialog.showTryLater();
                 } catch (InternetConnectionLostException e) {
@@ -97,7 +99,7 @@ public class CompositeProcessHandler extends OSProcessHandler {
                     CompositeDialog.showInternetConnectionError();
                 } catch (ProblemNumberInputCanceledException ignored){
                     consoleWriter.writeProcessTerminated();
-                } catch (InvalidVirtualFileAccessException e){
+                } catch (JudgeFailedException | InvalidVirtualFileAccessException e){
                     consoleWriter.writeProcessTerminated();
                     CompositeDialog.showFileDeleteDuringJudgeProcess();
                 }finally {

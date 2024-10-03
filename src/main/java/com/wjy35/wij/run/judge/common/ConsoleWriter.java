@@ -15,12 +15,15 @@ public class ConsoleWriter{
                     "                        __/ |                      \n" +
                     "                       |___/                       \n";
 
+    private final String SEPARATOR = "===================================================\n";
+
+
     public ConsoleWriter(ConsoleView consoleView) {
         this.consoleView = consoleView;
     }
 
     public void writeSeparator(){
-        consoleView.print(JudgeConsoleMessages.SEPARATOR, ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+        consoleView.print(SEPARATOR, ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
     }
 
     public void writeAsciiArt(){
@@ -30,5 +33,9 @@ public class ConsoleWriter{
     public void writeProcessTerminated(){
         consoleView.print("is Terminated\n", ConsoleViewContentType.LOG_WARNING_OUTPUT);
         writeSeparator();
+    }
+
+    public void writeCopyToClipBoard(){
+        consoleView.print("소스코드가 클립보드에 복사 되었습니다!\n", ConsoleViewContentType.NORMAL_OUTPUT);
     }
 }

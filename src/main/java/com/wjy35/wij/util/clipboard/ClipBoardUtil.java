@@ -14,7 +14,7 @@ public class ClipBoardUtil {
 
         if(!packageName.isEmpty()) sourceCode =  sourceCode.replaceFirst("package "+packageName+";","");
 
-        StringSelection stringSelection = new StringSelection(sourceCode);
+        StringSelection stringSelection = new StringSelection(sourceCode.trim());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
     }

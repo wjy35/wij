@@ -15,9 +15,9 @@ public class JudgeConsoleWriter extends ConsoleWriter {
     public void writeJudgeResult(JudgeResult judgeResult){
         if(judgeResult.getJudgeStatus()==JudgeStatus.ALL_ACCEPTED){
             consoleView.print(judgeResult+ "\n", ConsoleViewContentType.USER_INPUT);
-//            consoleView.print("소스코드가 클립보드에 복사 되었습니다!\n", ConsoleViewContentType.NORMAL_OUTPUT);
-
-        }else{
+        } else if (judgeResult.getJudgeStatus()==JudgeStatus.IO_FILE_NOT_EXIST) {
+            consoleView.print("Input & Output is not founded \n",ConsoleViewContentType.LOG_INFO_OUTPUT);
+        } else{
             consoleView.print(judgeResult + "\n", ConsoleViewContentType.ERROR_OUTPUT);
         }
     }
@@ -30,8 +30,13 @@ public class JudgeConsoleWriter extends ConsoleWriter {
         consoleView.print("Actual:\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
     }
 
+    public void writeInput(String input){
+        consoleView.print("Input:\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+        consoleView.print(input+"\n",ConsoleViewContentType.NORMAL_OUTPUT);
+    }
+
     public void writeExpected(String expected){
-        consoleView.print("\nExpected:\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+        consoleView.print("Expected:\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
         consoleView.print(expected+"\n",ConsoleViewContentType.NORMAL_OUTPUT);
     }
 
@@ -40,10 +45,10 @@ public class JudgeConsoleWriter extends ConsoleWriter {
     }
 
     public void writeAccepted(){
-        consoleView.print("Result: Accepted\n", ConsoleViewContentType.USER_INPUT);
+        consoleView.print("\nResult: Accepted\n", ConsoleViewContentType.USER_INPUT);
     }
 
     public void writeWrongAnswer(){
-        consoleView.print("Result: Wrong Answer\n", ConsoleViewContentType.ERROR_OUTPUT);
+        consoleView.print("\nResult: Wrong Answer\n", ConsoleViewContentType.ERROR_OUTPUT);
     }
 }

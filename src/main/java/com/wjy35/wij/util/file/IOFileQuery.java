@@ -53,6 +53,13 @@ public class IOFileQuery extends IOFileOperation{
         return ReadAction.compute(()-> packageIODirectory.findChild(OUTPUT_FILE_NAME+ioFileNumber));
     }
 
+    public VirtualFile findInputFileBy(String ioFileNumber){
+        VirtualFile packageIODirectory = WIJDirectoryProvider.getInstance(project).getOrCreatePackageIO(packageName);
+
+        return ReadAction.compute(()-> packageIODirectory.findChild(INPUT_FILE_NAME+ioFileNumber));
+    }
+
+
     public String fileNumberToInputFilePath(String ioFileNumber){
         String ioDirectoryPath = WIJDirectoryProvider.getInstance(project).getOrCreatePackageIO(packageName).getPath();
 

@@ -37,13 +37,13 @@ public class RuntimeStep {
 
     public JudgeStatus execute(){
         try{
-            return tryExecute();
+            return tryToExecute();
         } catch (ExecutionException e) {
             throw new JudgeFailedException();
         }
     }
 
-    private JudgeStatus tryExecute() throws ExecutionException {
+    private JudgeStatus tryToExecute() throws ExecutionException {
         CommandLineGenerator commandLineGenerator = new CommandLineGeneratorImpl(ioFileQuery,compilePath,qualifiedName);
         List<JudgeCommandLine> commandLineList = commandLineGenerator.createJudgeCommandLineListBy(ioFileQuery.findIOFileNumberList());
 
@@ -55,9 +55,13 @@ public class RuntimeStep {
             ProcessTerminatedListener.attach(current);
             consoleView.attachToProcess(current);
             consoleWriter.writeIOFileNumber(commandLine.getIoFileNumber());
-            consoleWriter.writeActual();
 
             if(isTerminated) break;
+            String input = IOFileUtil.getContent(ioFileQuery.findInputFileBy(commandLine.getIoFileNumber()));
+            String expected = IOFileUtil.getContent(ioFileQuery.findOutputFileBy(commandLine.getIoFileNumber()));
+            consoleWriter.writeInput(input);
+            consoleWriter.writeExpected(expected);
+            consoleWriter.writeActual();
 
             current.startNotify();
             if(current.isTimeLimitExceeded()){
@@ -69,9 +73,6 @@ public class RuntimeStep {
             if(isTerminated) break;
 
             String actual = current.getOutput();
-            String expected = IOFileUtil.getContent(ioFileQuery.findOutputFileBy(commandLine.getIoFileNumber()));
-            consoleWriter.writeExpected(expected);
-
             if(JudgeValidator.isAccepted(actual,expected)){
                 consoleWriter.writeAccepted();
                 judgeResult.increaseAcceptedCount();

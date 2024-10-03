@@ -1,20 +1,22 @@
 package com.wjy35.wij.run.judge.compilation.compiler;
 
-import com.intellij.execution.ui.ConsoleViewContentType;
-import com.wjy35.wij.run.judge.common.JudgeConsoleMessages;
+import com.wjy35.wij.run.judge.compilation.console.CompilationConsoleWriter;
 
 public class LoggingOSProcessCompiler extends LoggingCompiler{
-    public LoggingOSProcessCompiler(OSProcessCompiler Compiler) {
-        super(Compiler);
+    private final CompilationConsoleWriter consoleWriter;
+
+    public LoggingOSProcessCompiler(OSProcessCompiler compiler) {
+        super(compiler);
+        this.consoleWriter = new CompilationConsoleWriter(compiler.consoleView);
     }
 
     @Override
     protected void before() {
-        ((OSProcessCompiler)super.compiler).consoleView.print("Compile Main.java\n", ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+        consoleWriter.writeStart();
     }
 
     @Override
     protected void after() {
-        ((OSProcessCompiler)super.compiler).consoleView.print(JudgeConsoleMessages.SEPARATOR, ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+        consoleWriter.writeSeparator();
     }
 }
