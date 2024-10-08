@@ -14,12 +14,27 @@ public class IOFileQuery extends IOFileOperation{
         super(project, packageName);
     }
 
-    public VirtualFile findFirstFile(){
+    public VirtualFile[] findFirstIOFiles(){
         VirtualFile packageIODirectory = WIJDirectoryProvider.getInstance(project).getOrCreatePackageIO(packageName);
 
         return ReadAction.compute(()->{
+            VirtualFile[] existInput = new VirtualFile[MAX_FILE_COUNT];
+            VirtualFile[] existOutput = new VirtualFile[MAX_FILE_COUNT];
+
             for(VirtualFile child : packageIODirectory.getChildren()){
-                if(isIOFile(child)) return child;
+                if(isInputFile(child)){
+                    int fileNumber = getInputFileNumber(child);
+                    if(existOutput[fileNumber]!=null) return new VirtualFile[]{child,existInput[fileNumber]};
+
+                    existInput[fileNumber] = child;
+                }
+
+                if(isOutputFile(child)){
+                    int fileNumber = getOutputFileNumber(child);
+                    if(existInput[fileNumber]!=null) return new VirtualFile[]{existInput[fileNumber],child};
+
+                    existOutput[fileNumber] = child;
+                }
             }
 
             throw new IOFileNotFoundedException();
